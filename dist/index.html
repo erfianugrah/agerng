@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AoE IV Random Civilization Generator</title>
+  <title>AoE IV and AoM Random Civilization Generator</title>
   <style>
     :root {
       --primary-color: #3498db;
@@ -101,19 +101,20 @@
 </head>
 
 <body>
-  <h1>Age of Empires IV Random Civilization Generator</h1>
-  <button id="generateBtn">Generate Random Civilization</button>
+  <h1>AoE IV and AoM Random Civilization Generator</h1>
+  <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
+  <button id="generateAoMBtn">Generate AoM Civilization</button>
   <div id="result"></div>
 
   <script>
-    const civilizations = [
+    const aoe4Civilizations = [
       "Abbasid Dynasty", "Ayyubids", "Byzantines", "Chinese", "Delhi Sultanate",
       "English", "French", "Holy Roman Empire", "Japanese", "Jeanne d'Arc",
       "Malians", "Mongols", "Order of the Dragon", "Ottomans", "Rus",
       "Zhu Xi's Legacy"
     ];
 
-    const ageUpOptions = {
+    const aoe4AgeUpOptions = {
       "Abbasid Dynasty": ["Culture Wing", "Economic Wing", "Military Wing", "Trade Wing"],
       "Ayyubids": ["Culture Wing", "Economic Wing", "Military Wing", "Trade Wing"],
       "Byzantines": {
@@ -188,7 +189,7 @@
       }
     };
 
-    const ayyubidBonuses = {
+    const aoe4AyyubidBonuses = {
       "Culture Wing": {
         "Advancement": {
           "II": "Age up takes 96s, costs 225 food, 125 gold",
@@ -239,48 +240,146 @@
       }
     };
 
-    function generateRandomCiv() {
-      const civ = civilizations[Math.floor(Math.random() * civilizations.length)];
-      const ageUps = {};
+    const aomCivilizations = [
+      "Greeks", "Egyptians", "Norse", "Atlanteans"
+    ];
 
+    const aomGods = {
+      "Greeks": {
+        "major": ["Zeus", "Poseidon", "Hades"],
+        "minor": {
+          "Zeus": {
+            "Classical": ["Athena", "Hermes"],
+            "Heroic": ["Apollo", "Dionysus"],
+            "Mythic": ["Hera", "Hephaestus"]
+          },
+          "Poseidon": {
+            "Classical": ["Ares", "Hermes"],
+            "Heroic": ["Aphrodite", "Dionysus"],
+            "Mythic": ["Artemis", "Hephaestus"]
+          },
+          "Hades": {
+            "Classical": ["Ares", "Athena"],
+            "Heroic": ["Aphrodite", "Apollo"],
+            "Mythic": ["Artemis", "Hephaestus"]
+          }
+        }
+      },
+      "Egyptians": {
+        "major": ["Ra", "Isis", "Set"],
+        "minor": {
+          "Ra": {
+            "Classical": ["Bast", "Ptah"],
+            "Heroic": ["Hathor", "Sekhmet"],
+            "Mythic": ["Horus", "Osiris"]
+          },
+          "Isis": {
+            "Classical": ["Anubis", "Bast"],
+            "Heroic": ["Hathor", "Nephthys"],
+            "Mythic": ["Osiris", "Thoth"]
+          },
+          "Set": {
+            "Classical": ["Anubis", "Ptah"],
+            "Heroic": ["Nephthys", "Sekhmet"],
+            "Mythic": ["Horus", "Thoth"]
+          }
+        }
+      },
+      "Norse": {
+        "major": ["Odin", "Thor", "Loki"],
+        "minor": {
+          "Odin": {
+            "Classical": ["Freyja", "Forseti"],
+            "Heroic": ["Njord", "Skadi"],
+            "Mythic": ["Baldr", "Tyr"]
+          },
+          "Thor": {
+            "Classical": ["Forseti", "Freyja"],
+            "Heroic": ["Bragi", "Skadi"],
+            "Mythic": ["Baldr", "Tyr"]
+          },
+          "Loki": {
+            "Classical": ["Forseti", "Heimdall"],
+            "Heroic": ["Bragi", "Njord"],
+            "Mythic": ["Hel", "Tyr"]
+          }
+        }
+      },
+      "Atlanteans": {
+        "major": ["Kronos", "Gaia", "Oranos"],
+        "minor": {
+          "Kronos": {
+            "Classical": ["Prometheus", "Leto"],
+            "Heroic": ["Hyperion", "Rheia"],
+            "Mythic": ["Helios", "Atlas"]
+          },
+          "Gaia": {
+            "Classical": ["Oceanus", "Leto"],
+            "Heroic": ["Theia", "Rheia"],
+            "Mythic": ["Atlas", "Hekate"]
+          },
+          "Oranos": {
+            "Classical": ["Oceanus", "Prometheus"],
+            "Heroic": ["Hyperion", "Theia"],
+            "Mythic": ["Helios", "Hekate"]
+          }
+        }
+      }
+    };
+
+
+    function generateRandomAoE4Civ() {
+      const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
+      const ageUps = {};
       if (civ === "Abbasid Dynasty" || civ === "Ayyubids") {
-        const availableWings = [...ageUpOptions[civ]];
+        const availableWings = [...aoe4AgeUpOptions[civ]];
         for (const age of ["II", "III"]) {
           const wingIndex = Math.floor(Math.random() * availableWings.length);
           const wing = availableWings.splice(wingIndex, 1)[0];
           if (civ === "Abbasid Dynasty") {
             ageUps[age] = wing;
           } else {  // Ayyubids
-            const bonusTypes = Object.keys(ayyubidBonuses[wing]);
+            const bonusTypes = Object.keys(aoe4AyyubidBonuses[wing]);
             const bonusType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-            ageUps[age] = `${wing} - ${bonusType}: ${ayyubidBonuses[wing][bonusType][age]}`;
+            ageUps[age] = `${wing} - ${bonusType}: ${aoe4AyyubidBonuses[wing][bonusType][age]}`;
           }
         }
-
         // For Imperial Age, choose all remaining wings
         if (civ === "Abbasid Dynasty") {
           ageUps["IV"] = availableWings.join(" and ");
         } else {  // Ayyubids
           const imperialChoices = availableWings.map(wing => {
-            const bonusTypes = Object.keys(ayyubidBonuses[wing]);
+            const bonusTypes = Object.keys(aoe4AyyubidBonuses[wing]);
             const bonusType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-            return `${wing} - ${bonusType}: ${ayyubidBonuses[wing][bonusType]["IV"]}`;
+            return `${wing} - ${bonusType}: ${aoe4AyyubidBonuses[wing][bonusType]["IV"]}`;
           });
           ageUps["IV"] = imperialChoices.join(" and ");
         }
       } else {
         for (const age of ["II", "III", "IV"]) {
-          const options = ageUpOptions[civ][age];
+          const options = aoe4AgeUpOptions[civ][age];
           ageUps[age] = options[Math.floor(Math.random() * options.length)];
         }
       }
-
       return {civilization: civ, ageUps};
     }
 
-    function displayResult(result) {
+    function generateRandomAoMCiv() {
+      const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
+      const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
+      const minorGods = {};
+
+      for (const age of ["Classical", "Heroic", "Mythic"]) {
+        const options = aomGods[civ].minor[majorGod][age];
+        minorGods[age] = options[Math.floor(Math.random() * options.length)];
+      }
+
+      return {civilization: civ, majorGod, minorGods};
+    }
+
+    function displayAoE4Result(result) {
       const resultDiv = document.getElementById('result');
-      let html = `<h2>Random Civilization: ${result.civilization}</h2>`;
+      let html = `<h2>AoE IV Random Civilization: ${result.civilization}</h2>`;
       html += '<h3>Age-up choices:</h3>';
       html += '<ul>';
       for (const [age, choice] of Object.entries(result.ageUps)) {
@@ -290,9 +389,27 @@
       resultDiv.innerHTML = html;
     }
 
-    document.getElementById('generateBtn').addEventListener('click', () => {
-      const result = generateRandomCiv();
-      displayResult(result);
+    function displayAoMResult(result) {
+      const resultDiv = document.getElementById('result');
+      let html = `<h2>AoM Random Civilization: ${result.civilization}</h2>`;
+      html += `<h3>Major God: ${result.majorGod}</h3>`;
+      html += '<h3>Minor Gods:</h3>';
+      html += '<ul>';
+      for (const [age, god] of Object.entries(result.minorGods)) {
+        html += `<li>${age} Age: ${god}</li>`;
+      }
+      html += '</ul>';
+      resultDiv.innerHTML = html;
+    }
+
+    document.getElementById('generateAoE4Btn').addEventListener('click', () => {
+      const result = generateRandomAoE4Civ();
+      displayAoE4Result(result);
+    });
+
+    document.getElementById('generateAoMBtn').addEventListener('click', () => {
+      const result = generateRandomAoMCiv();
+      displayAoMResult(result);
     });
   </script>
 </body>
