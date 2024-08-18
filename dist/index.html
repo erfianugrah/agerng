@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AoE IV Random Civilization Generator</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --background-color: #ecf0f1;
+      --text-color: #34495e;
+      --border-color: #bdc3c7;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--secondary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 5px;
+      display: block;
+      margin: 0 auto 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    #result {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    #result:hover {
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    #result h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+      font-size: 1.8em;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    #result h3 {
+      color: var(--secondary-color);
+      font-size: 1.4em;
+      margin-bottom: 15px;
+    }
+
+    #result ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #result li {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f7f9fa;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    #result li:hover {
+      background-color: #edf2f7;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Age of Empires IV Random Civilization Generator</h1>
+  <button id="generateBtn">Generate Random Civilization</button>
+  <div id="result"></div>
+
+  <script>
+    const civilizations = [
+      "Abbasid Dynasty", "Ayyubids", "Byzantines", "Chinese", "Delhi Sultanate",
+      "English", "French", "Holy Roman Empire", "Japanese", "Jeanne d'Arc",
+      "Malians", "Mongols", "Order of the Dragon", "Ottomans", "Rus",
+      "Zhu Xi's Legacy"
+    ];
+
+    const ageUpOptions = {
+      "Abbasid Dynasty": ["Culture Wing", "Economic Wing", "Military Wing", "Trade Wing"],
+      "Ayyubids": ["Culture Wing", "Economic Wing", "Military Wing", "Trade Wing"],
+      "Byzantines": {
+        "II": ["Grand Winery", "Imperial Hippodrome"],
+        "III": ["Golden Horn Tower", "Cistern of the First Hill"],
+        "IV": ["Foreign Engineering Company", "Palatine School"]
+      },
+      "Chinese": {
+        "II": ["Barbican of the Sun", "Imperial Academy"],
+        "III": ["Imperial Palace", "Astronomical Clocktower"],
+        "IV": ["Great Wall Gatehouse", "Spirit Way"]
+      },
+      "Delhi Sultanate": {
+        "II": ["Tower of Victory", "Dome of the Faith"],
+        "III": ["Compound of the Defender", "House of Learning"],
+        "IV": ["Hisar Academy", "Palace of the Sultan"]
+      },
+      "English": {
+        "II": ["Council Hall", "Abbey of Kings"],
+        "III": ["King's Palace", "The White Tower"],
+        "IV": ["Berkshire Palace", "Wynguard Palace"]
+      },
+      "French": {
+        "II": ["Chamber of Commerce", "School of Cavalry"],
+        "III": ["Royal Institute", "Guild Hall"],
+        "IV": ["Red Palace", "College of Artillery"]
+      },
+      "Holy Roman Empire": {
+        "II": ["Meinwerk Palace", "Aachen Chapel"],
+        "III": ["Regnitz Cathedral", "Burgrave Palace"],
+        "IV": ["Elzbach Palace", "Palace of Swabia"]
+      },
+      "Japanese": {
+        "II": ["Koka Township", "Kura Storehouse"],
+        "III": ["Floating Gate", "Temple of Equality"],
+        "IV": ["Castle of the Crow", "Tanegashima Gunsmith"]
+      },
+      "Jeanne d'Arc": {
+        "II": ["Chamber of Commerce", "School of Cavalry"],
+        "III": ["Royal Institute", "Guild Hall"],
+        "IV": ["Red Palace", "College of Artillery"]
+      },
+      "Malians": {
+        "II": ["Saharan Trade Network", "Mansa Quarry"],
+        "III": ["Grand Fulani Corral", "Farimba Garrison"],
+        "IV": ["Griot Bara", "Fort of the Huntress"]
+      },
+      "Mongols": {
+        "II": ["Deer Stones", "The Silver Tree"],
+        "III": ["Kurultai", "Steppe Redoubt"],
+        "IV": ["The White Stupa", "Khaganate Palace"]
+      },
+      "Order of the Dragon": {
+        "II": ["Chamber of Commerce", "School of Cavalry"],
+        "III": ["Royal Institute", "Guild Hall"],
+        "IV": ["Red Palace", "College of Artillery"]
+      },
+      "Ottomans": {
+        "II": ["Twin Minaret Medrese", "Sultanhani Trade Network"],
+        "III": ["Istanbul Imperial Palace", "Mehmed Imperial Armory"],
+        "IV": ["Istanbul Observatory", "Sea Gate Castle"]
+      },
+      "Rus": {
+        "II": ["Kremlin", "The Golden Gate"],
+        "III": ["High Trade House", "Abbey of the Trinity"],
+        "IV": ["Spasskaya Tower", "High Armory"]
+      },
+      "Zhu Xi's Legacy": {
+        "II": ["Meditation Gardens", "Jiangnan Tower"],
+        "III": ["Mount Lu Academy", "Shaolin Monastery"],
+        "IV": ["Zhu Xi's Library", "Temple of the Sun"]
+      }
+    };
+
+    const ayyubidBonuses = {
+      "Culture Wing": {
+        "Advancement": {
+          "II": "Age up takes 96s, costs 225 food, 125 gold",
+          "III": "Age up takes 96s, costs 900 food, 500 gold",
+          "IV": "Age up takes 96s, costs 1500 food, 750 gold"
+        },
+        "Logistics": {
+          "II": "Grants 2 Dervishes, Dervish Mass Heal rate +25%",
+          "III": "Grants 3 Dervishes, Dervish Mass Heal rate +30%",
+          "IV": "Grants 4 Dervishes, Dervish Mass Heal rate +30% and permanent"
+        }
+      },
+      "Economic Wing": {
+        "Growth": {
+          "II": "Grants 3 Villagers, Orchards +50 food",
+          "III": "Grants 7 Villagers, Orchards +100 food",
+          "IV": "Grants 10 Villagers, Villagers +10% work rate"
+        },
+        "Industry": {
+          "II": "Grants 300 wood",
+          "III": "Grants 1,000 wood",
+          "IV": "Grants 2,500 wood"
+        }
+      },
+      "Military Wing": {
+        "Master Smiths": {
+          "II": "Grants Feudal Age Blacksmith attack and armor technologies for free",
+          "III": "Grants Castle Age Blacksmith attack and armor technologies for free (requires Feudal Age technologies)",
+          "IV": "Grants Imperial Age Blacksmith attack and armor technologies for free (requires Castle Age technologies)"
+        },
+        "Reinforcement": {
+          "II": "Grants 1 Desert Raider after 15 seconds, then 1 more every 2 minutes. Cavalry can construct siege",
+          "III": "Grants 3 Desert Raiders after 15 seconds, then 3 more every 2 minutes. Cavalry can construct siege",
+          "IV": "Grants 7 Desert Raiders after 15 seconds, then 7 more every 2 minutes. Cavalry can construct siege"
+        }
+      },
+      "Trade Wing": {
+        "Advisors": {
+          "II": "Grants 3 Atabegs",
+          "III": "Grants 5 Atabegs",
+          "IV": "Grants 7 Atabegs"
+        },
+        "Bazaar": {
+          "II": "Grants a trade caravan every 3 minutes",
+          "III": "Grants a trade caravan with improved trades every 3 minutes",
+          "IV": "Grants a trade caravan with further improved trades every 3 minutes"
+        }
+      }
+    };
+
+    function generateRandomCiv() {
+      const civ = civilizations[Math.floor(Math.random() * civilizations.length)];
+      const ageUps = {};
+
+      if (civ === "Abbasid Dynasty" || civ === "Ayyubids") {
+        const availableWings = [...ageUpOptions[civ]];
+        for (const age of ["II", "III"]) {
+          const wingIndex = Math.floor(Math.random() * availableWings.length);
+          const wing = availableWings.splice(wingIndex, 1)[0];
+          if (civ === "Abbasid Dynasty") {
+            ageUps[age] = wing;
+          } else {  // Ayyubids
+            const bonusTypes = Object.keys(ayyubidBonuses[wing]);
+            const bonusType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+            ageUps[age] = `${wing} - ${bonusType}: ${ayyubidBonuses[wing][bonusType][age]}`;
+          }
+        }
+
+        // For Imperial Age, choose all remaining wings
+        if (civ === "Abbasid Dynasty") {
+          ageUps["IV"] = availableWings.join(" and ");
+        } else {  // Ayyubids
+          const imperialChoices = availableWings.map(wing => {
+            const bonusTypes = Object.keys(ayyubidBonuses[wing]);
+            const bonusType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+            return `${wing} - ${bonusType}: ${ayyubidBonuses[wing][bonusType]["IV"]}`;
+          });
+          ageUps["IV"] = imperialChoices.join(" and ");
+        }
+      } else {
+        for (const age of ["II", "III", "IV"]) {
+          const options = ageUpOptions[civ][age];
+          ageUps[age] = options[Math.floor(Math.random() * options.length)];
+        }
+      }
+
+      return {civilization: civ, ageUps};
+    }
+
+    function displayResult(result) {
+      const resultDiv = document.getElementById('result');
+      let html = `<h2>Random Civilization: ${result.civilization}</h2>`;
+      html += '<h3>Age-up choices:</h3>';
+      html += '<ul>';
+      for (const [age, choice] of Object.entries(result.ageUps)) {
+        html += `<li>Age ${age}: ${choice}</li>`;
+      }
+      html += '</ul>';
+      resultDiv.innerHTML = html;
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const result = generateRandomCiv();
+      displayResult(result);
+    });
+  </script>
+</body>
+
+</html>
