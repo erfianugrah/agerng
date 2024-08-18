@@ -1,0 +1,8 @@
+{
+  "civilization": "Order of the Dragon",
+  "age_ups": {
+    "II": "Chamber of Commerce",
+    "III": "Guild Hall",
+    "IV": "Red Palace"
+  }
+}

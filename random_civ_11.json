@@ -1,0 +1,8 @@
+{
+  "civilization": "Jeanne d'Arc",
+  "age_ups": {
+    "II": "Chamber of Commerce",
+    "III": "Royal Institute",
+    "IV": "Red Palace"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "civilization": "Rus",
+  "age_ups": {
+    "II": "Kremlin",
+    "III": "Abbey of the Trinity",
+    "IV": "High Armory"
+  }
+}
