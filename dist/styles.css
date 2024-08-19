@@ -26,6 +26,15 @@ body {
 .history-panel {
 	width: 300px;
 	margin-right: 20px;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
+
+.history-list {
+	flex-grow: 1;
+	overflow-y: auto;
+	margin-bottom: 20px;
 }
 
 .main-content {
@@ -89,5 +98,5 @@ li {
 }
 
 .export-buttons {
-	margin-top: 20px;
+	margin-top: auto;
 }

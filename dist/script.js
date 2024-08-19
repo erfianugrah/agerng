@@ -17,7 +17,7 @@ function saveHistory() {
 
 function addToHistory(result) {
   history.unshift(result);
-  if (history.length > 10) {
+  if (history.length > 100) {
     history.pop();
   }
   saveHistory();
