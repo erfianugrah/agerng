@@ -59,23 +59,56 @@ function displayHistoryItem(index) {
   previewDiv.style.display = 'block';
 }
 
+function finalizeAoE4Selection() {
+  if (!currentAoE4Civ) return;
+
+  const ageUps = {};
+  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
+    const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
+    const selectedWings = [];
+    for (let i = 0; i < 3; i++) {
+      const wing = weightedRandomChoice(wings, currentAoE4Civ.weights.wings);
+      selectedWings.push(wing);
+      // Remove the selected wing from options and redistribute weights
+      const index = wings.indexOf(wing);
+      wings.splice(index, 1);
+      currentAoE4Civ.weights.wings.splice(index, 1);
+      const sum = currentAoE4Civ.weights.wings.reduce((a, b) => a + b, 0);
+      currentAoE4Civ.weights.wings = currentAoE4Civ.weights.wings.map((w) => w / sum);
+    }
+
+    if (currentAoE4Civ.name === 'Abbasid Dynasty') {
+      ageUps['II'] = selectedWings[0];
+      ageUps['III'] = selectedWings[1];
+      ageUps['IV'] = selectedWings[2];
+    } else {
+      // Ayyubids
+      for (const [index, age] of ['II', 'III', 'IV'].entries()) {
+        const wing = selectedWings[index];
+        const bonusTypes = Object.keys(aoe4AyyubidBonuses[wing]);
+        const bonusType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+        ageUps[age] = `${wing} - ${bonusType}: ${aoe4AyyubidBonuses[wing][bonusType][age]}`;
+      }
+    }
+  } else {
+    for (const [age, options] of Object.entries(aoe4AgeUpOptions[currentAoE4Civ.name])) {
+      if (Array.isArray(options)) {
+        ageUps[age] = weightedRandomChoice(options, currentAoE4Civ.weights[age]);
+      }
+    }
+  }
+
+  const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
+  addToHistory(result);
+  displayAoE4Result(result);
+}
+
 function displayAoE4Result(result) {
   const resultDiv = document.getElementById('aoe4Result');
   let html = `<h3>Result: ${result.civilization}</h3>`;
   html += '<ul>';
   for (const [age, choice] of Object.entries(result.ageUps)) {
     html += `<li>Age ${age}: ${choice}</li>`;
-  }
-  html += '</ul>';
-  resultDiv.innerHTML = html;
-}
-
-function displayAoMResult(result) {
-  const resultDiv = document.getElementById('aomResult');
-  let html = `<h3>Result: ${result.civilization} - ${result.majorGod}</h3>`;
-  html += '<ul>';
-  for (const [age, god] of Object.entries(result.minorGods)) {
-    html += `<li>${age} Age: ${god}</li>`;
   }
   html += '</ul>';
   resultDiv.innerHTML = html;
@@ -342,7 +375,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = generateRandomAoE4Civ();
     document.getElementById('aoe4Result').innerHTML =
       `<h3>Selected Civilization: ${result.name}</h3>`;
-    document.getElementById('finalizeAoE4Btn').style.display = 'inline';
+    document.getElementById('generateAoE4Btn').style.display = 'none';
+    document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
   });
 
@@ -350,18 +384,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = generateRandomAoMCiv();
     document.getElementById('aomResult').innerHTML =
       `<h3>Selected Civilization: ${result.name}</h3><h4>Major God: ${result.god}</h4>`;
-    document.getElementById('finalizeAoMBtn').style.display = 'inline';
+    document.getElementById('generateAoMBtn').style.display = 'none';
+    document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
   });
 
   document.getElementById('finalizeAoE4Btn').addEventListener('click', () => {
     finalizeAoE4Selection();
     document.getElementById('finalizeAoE4Btn').style.display = 'none';
+    document.getElementById('generateAoE4Btn').style.display = 'inline-block';
   });
 
   document.getElementById('finalizeAoMBtn').addEventListener('click', () => {
     finalizeAoMSelection();
     document.getElementById('finalizeAoMBtn').style.display = 'none';
+    document.getElementById('generateAoMBtn').style.display = 'inline-block';
   });
 
   document.getElementById('exportJSON').addEventListener('click', exportJSON);

@@ -23,17 +23,21 @@
       <div class="game-columns">
         <div class="game-box" id="aoe4Box">
           <h2>Age of Empires IV</h2>
-          <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
+          <div class="button-container">
+            <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
+            <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
+          </div>
           <div id="aoe4Weights" class="weight-inputs"></div>
-          <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
-          <div id="aoe4Result"></div>
+          <div id="aoe4Result" class="result-container"></div>
         </div>
         <div class="game-box" id="aomBox">
           <h2>Age of Mythology</h2>
-          <button id="generateAoMBtn">Generate AoM Major God</button>
+          <div class="button-container">
+            <button id="generateAoMBtn">Generate AoM Major God</button>
+            <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
+          </div>
           <div id="aomWeights" class="weight-inputs"></div>
-          <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
-          <div id="aomResult"></div>
+          <div id="aomResult" class="result-container"></div>
         </div>
       </div>
     </div>
