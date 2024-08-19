@@ -126,12 +126,20 @@ function updateAoE4Buttons() {
   // Set up event listeners
   document.getElementById('rerollAoE4LandmarksBtn').addEventListener('click', rerollAoE4Landmarks);
 
+  // Add event listener for finalize button
+  finalizeBtn.addEventListener('click', () => {
+    const result = finalizeAoE4Selection(true);
+    displayAoE4Result(result);
+    // Reset the UI for a new selection
+    currentAoE4Civ = null;
+    updateAoE4Buttons();
+  });
+
   // Show/hide buttons as needed
   generateBtn.style.display = currentAoE4Civ ? 'none' : 'inline-block';
   finalizeBtn.style.display = currentAoE4Civ ? 'inline-block' : 'none';
   additionalButtonsDiv.style.display = currentAoE4Civ ? 'block' : 'none';
 }
-
 function rerollAoE4Landmarks() {
   console.log('Re-rolling landmarks for current AoE4 civilization');
   if (!currentAoE4Civ) {
@@ -269,3 +277,5 @@ function generateStandardHTML() {
 document.addEventListener('DOMContentLoaded', () => {
   updateAoE4Buttons();
 });
+
+document.getElementById('generateAoE4Btn').addEventListener('click', generateRandomAoE4Civ);
