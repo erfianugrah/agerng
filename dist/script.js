@@ -26,9 +26,9 @@ function addToHistory(result) {
 function updateHistoryDisplay() {
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
-  history.forEach((item, index) => {
+  history.forEach((item) => {
     const li = document.createElement('li');
-    li.textContent = `${index + 1}. ${item.game}: ${item.civilization}${item.majorGod ? ' - ' + item.majorGod : ''}`;
+    li.textContent = `${item.game}: ${item.civilization}${item.majorGod ? ' - ' + item.majorGod : ''}`;
     historyList.appendChild(li);
   });
 }
