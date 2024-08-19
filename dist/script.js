@@ -26,11 +26,49 @@ function addToHistory(result) {
 function updateHistoryDisplay() {
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
-  history.forEach((item) => {
+  history.forEach((item, index) => {
     const li = document.createElement('li');
     li.textContent = `${item.game}: ${item.civilization}${item.majorGod ? ' - ' + item.majorGod : ''}`;
+    li.addEventListener('click', () => displayHistoryItem(index));
     historyList.appendChild(li);
   });
+}
+
+function displayHistoryItem(index) {
+  const item = history[index];
+  if (item.game === 'AoE IV') {
+    displayAoE4Result(item);
+  } else if (item.game === 'AoM') {
+    displayAoMResult(item);
+  }
+}
+
+function displayAoE4Result(result) {
+  const resultDiv = document.getElementById('aoe4Result');
+  let html = `<h3>AoE IV Result: ${result.civilization}</h3>`;
+  html += '<ul>';
+  for (const [age, choice] of Object.entries(result.ageUps)) {
+    html += `<li>Age ${age}: ${choice}</li>`;
+  }
+  html += '</ul>';
+  resultDiv.innerHTML = html;
+
+  // Clear AoM result
+  document.getElementById('aomResult').innerHTML = '';
+}
+
+function displayAoMResult(result) {
+  const resultDiv = document.getElementById('aomResult');
+  let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
+  html += '<ul>';
+  for (const [age, god] of Object.entries(result.minorGods)) {
+    html += `<li>${age} Age: ${god}</li>`;
+  }
+  html += '</ul>';
+  resultDiv.innerHTML = html;
+
+  // Clear AoE IV result
+  document.getElementById('aoe4Result').innerHTML = '';
 }
 
 function exportJSON() {
