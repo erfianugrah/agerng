@@ -126,7 +126,7 @@ function updateAoE4Buttons() {
   // Update additional buttons
   additionalButtonsDiv.innerHTML = currentAoE4Civ
     ? `
-    <button id="rerollAoE4LandmarksBtn">Re-roll Landmarks</button>
+    <button id="rerollAoE4LandmarksBtn">Roll Landmarks</button>
   `
     : '';
 

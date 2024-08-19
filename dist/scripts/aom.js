@@ -98,7 +98,7 @@ function updateAoMButtons() {
   // Update additional buttons
   additionalButtonsDiv.innerHTML = currentAoMCiv
     ? `
-    <button id="rerollAoMGodsBtn">Re-roll Gods</button>
+    <button id="rerollAoMGodsBtn">Roll Gods</button>
   `
     : '';
 
