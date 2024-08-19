@@ -56,7 +56,7 @@ function updateAoE4WeightInputs() {
               <span class="weight-label">${option}</span>
               <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
                 data-key="${age}" data-index="${index}">
-              <span class="weight-value">${currentAoE4Civ.weights[age][index].toFixed(2)}</span>
+              <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
             </div>
           `;
         });
@@ -110,6 +110,19 @@ function updateAoE4Weight(key, index, value) {
 
   console.log('Updated AoE4 weights:', currentAoE4Civ.weights);
   updateAoE4WeightInputs();
+}
+
+function updateAoE4WeightDisplay() {
+  const sliders = document.querySelectorAll('.aoe4-slider');
+  sliders.forEach((slider) => {
+    const key = slider.dataset.key;
+    const index = parseInt(slider.dataset.index);
+    slider.value = currentAoE4Civ.weights[key][index];
+    const displayElement = slider.nextElementSibling;
+    if (displayElement) {
+      displayElement.textContent = `${(currentAoE4Civ.weights[key][index] * 100).toFixed(0)}%`;
+    }
+  });
 }
 
 function handleAoE4SliderInput(event) {
