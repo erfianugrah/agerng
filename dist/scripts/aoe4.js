@@ -30,25 +30,7 @@ function updateAoE4Weight(key, index, value) {
     currentAoE4Civ.weights[key][1 - index] = 1 - value;
   }
 
-  // Update the displayed values
-  const weightsDiv = document.getElementById('aoe4Weights');
-  const sliders = weightsDiv.querySelectorAll('.weight-slider');
-  sliders.forEach((slider) => {
-    const sliderKey = slider.dataset.key;
-    const sliderIndex = parseInt(slider.dataset.index);
-    if (sliderKey === key && sliderIndex === index) {
-      slider.value = value;
-      slider.nextElementSibling.textContent = value.toFixed(2);
-    } else if (
-      currentAoE4Civ.name !== 'Abbasid Dynasty' &&
-      currentAoE4Civ.name !== 'Ayyubids' &&
-      sliderKey === key
-    ) {
-      const otherValue = currentAoE4Civ.weights[key][1 - sliderIndex];
-      slider.value = otherValue;
-      slider.nextElementSibling.textContent = otherValue.toFixed(2);
-    }
-  });
+  updateAoE4WeightInputs();
 }
 
 function updateAoE4WeightInputs() {
@@ -93,9 +75,18 @@ function updateAoE4WeightInputs() {
   // Add event listeners for all sliders
   const sliders = weightsDiv.querySelectorAll('.weight-slider');
   sliders.forEach((slider) => {
+    slider.addEventListener('input', handleSliderInput);
     slider.addEventListener('mousedown', startDragging);
     slider.addEventListener('touchstart', startDragging);
   });
+}
+
+function handleSliderInput(event) {
+  const slider = event.target;
+  const key = slider.dataset.key;
+  const index = parseInt(slider.dataset.index);
+  const value = parseFloat(slider.value);
+  updateAoE4Weight(key, index, value);
 }
 
 function startDragging(event) {
