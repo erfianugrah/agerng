@@ -191,7 +191,7 @@ function finalizeAoE4Selection(addToHistory = true) {
 
 function finalizeAbbasidAyyubidSelection() {
   const wings = [...aoe4AgeUpOptions[currentAoE4Civ.name]];
-  let weights = [...currentAoE4Civ.weights.wings];
+  const weights = [...currentAoE4Civ.weights.wings];
   const selectedWings = [];
   for (let i = 0; i < 3; i++) {
     const wing = weightedRandomChoice(wings, weights);
