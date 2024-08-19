@@ -34,33 +34,37 @@ function updateAoE4Weight(key, index, value) {
 
 function updateAoE4WeightInputs() {
   const weightsDiv = document.getElementById('aoe4Weights');
-  let html = '';
+  let html = '<h3>Weights for ' + currentAoE4Civ.name + ':</h3>';
 
-  if (currentAoE4Civ) {
-    html += `<h3>Weights for ${currentAoE4Civ.name}:</h3>`;
-    if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
-      const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
-      wings.forEach((wing, index) => {
-        html += `
-          <div>
-            ${wing} <input type="number" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index].toFixed(2)}" 
-              onchange="updateAoE4Weight('wings', ${index}, this.value)">
-          </div>
-        `;
-      });
-    } else {
-      for (const [age, options] of Object.entries(aoe4AgeUpOptions[currentAoE4Civ.name])) {
-        if (Array.isArray(options)) {
+  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
+    html += '<div class="weight-group"><h4>Wings</h4>';
+    const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
+    wings.forEach((wing, index) => {
+      html += `
+        <div class="weight-item">
+          <span class="weight-label">${wing}</span>
+          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
+            oninput="updateAoE4Weight('wings', ${index}, this.value)">
+          <span class="weight-value">${currentAoE4Civ.weights.wings[index].toFixed(2)}</span>
+        </div>
+      `;
+    });
+    html += '</div>';
+  } else {
+    for (const [age, options] of Object.entries(aoe4AgeUpOptions[currentAoE4Civ.name])) {
+      if (Array.isArray(options)) {
+        html += `<div class="weight-group"><h4>Age ${age}</h4>`;
+        options.forEach((option, index) => {
           html += `
-            <div>
-              Age ${age}:
-              ${options[0]} <input type="number" min="0" max="1" step="0.1" value="${currentAoE4Civ.weights[age][0].toFixed(1)}" 
-                onchange="updateAoE4Weight('${age}', 0, this.value)">
-              ${options[1]} <input type="number" min="0" max="1" step="0.1" value="${currentAoE4Civ.weights[age][1].toFixed(1)}" 
-                onchange="updateAoE4Weight('${age}', 1, this.value)">
+            <div class="weight-item">
+              <span class="weight-label">${option}</span>
+              <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
+                oninput="updateAoE4Weight('${age}', ${index}, this.value)">
+              <span class="weight-value">${currentAoE4Civ.weights[age][index].toFixed(2)}</span>
             </div>
           `;
-        }
+        });
+        html += '</div>';
       }
     }
   }

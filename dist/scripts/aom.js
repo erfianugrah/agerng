@@ -17,22 +17,22 @@ function updateAoMWeight(key, index, value) {
 
 function updateAoMWeightInputs() {
   const weightsDiv = document.getElementById('aomWeights');
-  let html = '';
+  let html = `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
 
-  if (currentAoMCiv) {
-    html += `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
-    for (const age of ['Classical', 'Heroic', 'Mythic']) {
-      const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
+  for (const age of ['Classical', 'Heroic', 'Mythic']) {
+    const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
+    html += `<div class="weight-group"><h4>${age} Age</h4>`;
+    options.forEach((option, index) => {
       html += `
-        <div>
-          ${age} Age:
-          ${options[0]} <input type="number" min="0" max="1" step="0.1" value="${currentAoMCiv.weights[age][0].toFixed(1)}" 
-            onchange="updateAoMWeight('${age}', 0, this.value)">
-          ${options[1]} <input type="number" min="0" max="1" step="0.1" value="${currentAoMCiv.weights[age][1].toFixed(1)}" 
-            onchange="updateAoMWeight('${age}', 1, this.value)">
+        <div class="weight-item">
+          <span class="weight-label">${option}</span>
+          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
+            oninput="updateAoMWeight('${age}', ${index}, this.value)">
+          <span class="weight-value">${currentAoMCiv.weights[age][index].toFixed(2)}</span>
         </div>
       `;
-    }
+    });
+    html += '</div>';
   }
 
   weightsDiv.innerHTML = html;
