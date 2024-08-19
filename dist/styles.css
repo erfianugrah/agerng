@@ -1,0 +1,92 @@
+:root {
+	--primary-color: #3498db;
+	--secondary-color: #2c3e50;
+	--background-color: #ecf0f1;
+	--text-color: #34495e;
+	--border-color: #bdc3c7;
+}
+
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	line-height: 1.6;
+	color: var(--text-color);
+	background-color: var(--background-color);
+	margin: 0;
+	padding: 20px;
+	display: flex;
+}
+
+.container {
+	display: flex;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.history-panel {
+	width: 300px;
+	margin-right: 20px;
+}
+
+.main-content {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.game-box {
+	background-color: white;
+	border: 1px solid var(--border-color);
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+h1,
+h2,
+h3 {
+	color: var(--secondary-color);
+	margin-top: 0;
+}
+
+button {
+	background-color: var(--primary-color);
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+button:hover {
+	background-color: #2980b9;
+}
+
+.weight-inputs div {
+	margin-bottom: 10px;
+}
+
+input[type="number"] {
+	width: 60px;
+}
+
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+li {
+	margin-bottom: 10px;
+	padding: 10px;
+	background-color: #f7f9fa;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.export-buttons {
+	margin-top: 20px;
+}
