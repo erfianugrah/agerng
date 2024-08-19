@@ -127,16 +127,24 @@ function updateAoE4Buttons() {
   }
 
   // Update additional buttons
-  additionalButtonsDiv.innerHTML = `
+  additionalButtonsDiv.innerHTML = currentAoE4Civ
+    ? `
     <button id="rerollAoE4LandmarksBtn">Re-roll Landmarks</button>
-  `;
+  `
+    : '';
 
   // Set up event listeners
-  document.getElementById('rerollAoE4LandmarksBtn').addEventListener('click', rerollAoE4Landmarks);
+  if (currentAoE4Civ) {
+    document
+      .getElementById('rerollAoE4LandmarksBtn')
+      .addEventListener('click', rerollAoE4Landmarks);
+  }
 
   // Remove existing event listeners before adding new ones
   finalizeBtn.removeEventListener('click', finalizeAoE4ButtonHandler);
-  finalizeBtn.addEventListener('click', finalizeAoE4ButtonHandler);
+  if (currentAoE4Civ) {
+    finalizeBtn.addEventListener('click', finalizeAoE4ButtonHandler);
+  }
 
   // Show/hide buttons as needed
   generateBtn.style.display = currentAoE4Civ ? 'none' : 'inline-block';
@@ -147,13 +155,17 @@ function updateAoE4Buttons() {
 function finalizeAoE4ButtonHandler() {
   const result = finalizeAoE4Selection(true);
   if (result) {
-    displayAoE4Result(result);
-    // Reset the UI for a new selection
-    currentAoE4Civ = null;
-    updateAoE4Buttons();
+    displayAoE4Result(result, true);
+    resetAoE4State();
   } else {
     console.error('Failed to finalize AoE4 selection');
   }
+}
+
+function resetAoE4State() {
+  currentAoE4Civ = null;
+  updateAoE4Buttons();
+  document.getElementById('aoe4Weights').innerHTML = '';
 }
 
 function rerollAoE4Landmarks() {
@@ -233,7 +245,7 @@ function finalizeStandardSelection() {
   return ageUps;
 }
 
-function displayAoE4Result(result) {
+function displayAoE4Result(result, isFinalized = false) {
   console.log('Displaying AoE4 result', result);
   const resultDiv = document.getElementById('aoe4Result');
   if (!resultDiv) {
@@ -246,6 +258,9 @@ function displayAoE4Result(result) {
     html += `<li>Age ${age}: ${choice}</li>`;
   }
   html += '</ul>';
+  if (isFinalized) {
+    html += '<p><strong>This result has been finalized and added to history.</strong></p>';
+  }
   resultDiv.innerHTML = html;
 }
 
