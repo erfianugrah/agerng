@@ -124,17 +124,21 @@ function updateAoE4Buttons() {
   }
 
   // Update additional buttons
-  additionalButtonsDiv.innerHTML = currentAoE4Civ
-    ? `
-    <button id="rerollAoE4LandmarksBtn">Roll Landmarks</button>
-  `
-    : '';
-
-  // Set up event listeners
   if (currentAoE4Civ) {
+    const buttonText =
+      currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids'
+        ? 'Roll Wings'
+        : 'Roll Landmarks';
+    additionalButtonsDiv.innerHTML = `
+      <button id="rerollAoE4LandmarksBtn">${buttonText}</button>
+    `;
+
+    // Set up event listener
     document
       .getElementById('rerollAoE4LandmarksBtn')
       .addEventListener('click', rerollAoE4Landmarks);
+  } else {
+    additionalButtonsDiv.innerHTML = '';
   }
 
   // Remove existing event listeners before adding new ones
