@@ -9,39 +9,37 @@
 </head>
 
 <body>
-  <div class="container">
-    <aside class="history-panel">
-      <h2>History</h2>
-      <div id="historyList" class="history-list"></div>
-      <div class="export-buttons">
-        <button id="exportJSON">Export as JSON</button>
-        <button id="exportCSV">Export as CSV</button>
-      </div>
-    </aside>
-    <main class="main-content">
-      <div id="historyPreview" class="history-preview"></div>
-      <div class="game-columns">
-        <div class="game-box" id="aoe4Box">
-          <h2>Age of Empires IV</h2>
-          <div class="button-container">
-            <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
-            <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
-          </div>
-          <div id="aoe4Weights" class="weight-inputs"></div>
-          <div id="aoe4Result" class="result-container"></div>
+  <aside class="history-panel">
+    <h2>History</h2>
+    <div id="historyList" class="history-list"></div>
+    <div class="export-buttons">
+      <button id="exportJSON">Export as JSON</button>
+      <button id="exportCSV">Export as CSV</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div id="historyPreview" class="history-preview"></div>
+    <div class="game-columns">
+      <div class="game-box" id="aoe4Box">
+        <h2>Age of Empires IV</h2>
+        <div class="button-container">
+          <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
+          <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
         </div>
-        <div class="game-box" id="aomBox">
-          <h2>Age of Mythology</h2>
-          <div class="button-container">
-            <button id="generateAoMBtn">Generate AoM Major God</button>
-            <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
-          </div>
-          <div id="aomWeights" class="weight-inputs"></div>
-          <div id="aomResult" class="result-container"></div>
-        </div>
+        <div id="aoe4Weights" class="weight-inputs"></div>
+        <div id="aoe4Result" class="result-container"></div>
       </div>
-    </main>
-  </div>
+      <div class="game-box" id="aomBox">
+        <h2>Age of Mythology</h2>
+        <div class="button-container">
+          <button id="generateAoMBtn">Generate AoM Major God</button>
+          <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
+        </div>
+        <div id="aomWeights" class="weight-inputs"></div>
+        <div id="aomResult" class="result-container"></div>
+      </div>
+    </div>
+  </main>
   <script src="scripts/utils.js"></script>
   <script src="scripts/civgods.js"></script>
   <script src="scripts/aoe4.js"></script>
