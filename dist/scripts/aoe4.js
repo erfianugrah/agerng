@@ -39,7 +39,7 @@ function updateAoE4WeightInputs() {
       html += `
         <div class="weight-item">
           <span class="weight-label">${wing}</span>
-          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
+          <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
             data-key="wings" data-index="${index}">
           <span class="weight-value">${currentAoE4Civ.weights.wings[index].toFixed(2)}</span>
         </div>
@@ -54,7 +54,7 @@ function updateAoE4WeightInputs() {
           html += `
             <div class="weight-item">
               <span class="weight-label">${option}</span>
-              <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
+              <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
                 data-key="${age}" data-index="${index}">
               <span class="weight-value">${currentAoE4Civ.weights[age][index].toFixed(2)}</span>
             </div>
@@ -69,17 +69,17 @@ function updateAoE4WeightInputs() {
   weightsDiv.innerHTML = html;
 
   // Add event listeners for all sliders
-  const sliders = weightsDiv.querySelectorAll('.weight-slider');
-  console.log(`Found ${sliders.length} sliders`);
+  const sliders = weightsDiv.querySelectorAll('.aoe4-slider');
+  console.log(`Found ${sliders.length} AoE4 sliders`);
   sliders.forEach((slider) => {
-    slider.addEventListener('input', handleSliderInput);
-    slider.addEventListener('mousedown', startDragging);
-    slider.addEventListener('touchstart', startDragging);
+    slider.addEventListener('input', handleAoE4SliderInput);
+    slider.addEventListener('mousedown', startAoE4Dragging);
+    slider.addEventListener('touchstart', startAoE4Dragging);
   });
 }
 
 function updateAoE4Weight(key, index, value) {
-  console.log(`Updating weight: key=${key}, index=${index}, value=${value}`);
+  console.log(`Updating AoE4 weight: key=${key}, index=${index}, value=${value}`);
   value = parseFloat(value);
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
     const totalWeight = currentAoE4Civ.weights.wings.reduce(
@@ -95,12 +95,12 @@ function updateAoE4Weight(key, index, value) {
     currentAoE4Civ.weights[key][index] = value;
     currentAoE4Civ.weights[key][1 - index] = 1 - value;
   }
-  console.log('Updated weights:', currentAoE4Civ.weights);
+  console.log('Updated AoE4 weights:', currentAoE4Civ.weights);
   updateAoE4WeightInputs();
 }
 
-function handleSliderInput(event) {
-  console.log('Slider input event triggered');
+function handleAoE4SliderInput(event) {
+  console.log('AoE4 Slider input event triggered');
   console.log('Slider value:', event.target.value);
   console.log('Slider key:', event.target.dataset.key);
   console.log('Slider index:', event.target.dataset.index);
@@ -111,7 +111,7 @@ function handleSliderInput(event) {
   updateAoE4Weight(key, index, value);
 }
 
-function startDragging(event) {
+function startAoE4Dragging(event) {
   event.preventDefault();
   const slider = event.target;
   const key = slider.dataset.key;
@@ -119,7 +119,7 @@ function startDragging(event) {
 
   function onMove(moveEvent) {
     moveEvent.preventDefault();
-    const newValue = calculateSliderValue(slider, moveEvent);
+    const newValue = calculateAoE4SliderValue(slider, moveEvent);
     updateAoE4Weight(key, index, newValue);
   }
 
@@ -136,7 +136,7 @@ function startDragging(event) {
   document.addEventListener('touchend', onEnd);
 }
 
-function calculateSliderValue(slider, event) {
+function calculateAoE4SliderValue(slider, event) {
   const rect = slider.getBoundingClientRect();
   const x = event.type.startsWith('touch') ? event.touches[0].clientX : event.clientX;
   const position = (x - rect.left) / rect.width;
