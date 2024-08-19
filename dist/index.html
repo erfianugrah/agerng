@@ -467,6 +467,8 @@
     function finalizeAoE4Selection() {
       if (!currentAoE4Civ) return;
 
+      console.log("Finalizing AoE4 selection for", currentAoE4Civ.name);
+
       const ageUps = {};
       if (currentAoE4Civ.name === "Abbasid Dynasty" || currentAoE4Civ.name === "Ayyubids") {
         const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
@@ -497,11 +499,14 @@
         }
       }
 
+      console.log("AoE4 age-ups:", ageUps);
       displayAoE4Result({civilization: currentAoE4Civ.name, ageUps});
     }
 
     function finalizeAoMSelection() {
       if (!currentAoMCiv) return;
+
+      console.log("Finalizing AoM selection for", currentAoMCiv.name, "-", currentAoMCiv.god);
 
       const minorGods = {};
       for (const age of ["Classical", "Heroic", "Mythic"]) {
@@ -509,47 +514,27 @@
         minorGods[age] = weightedRandomChoice(options, currentAoMCiv.weights[age]);
       }
 
+      console.log("AoM minor gods:", minorGods);
       displayAoMResult({civilization: currentAoMCiv.name, majorGod: currentAoMCiv.god, minorGods});
     }
 
-    function displayAoE4Result(result) {
-      const resultDiv = document.getElementById('result');
-      let html = `<h2>AoE IV Random Civilization: ${result.civilization}</h2>`;
-      html += '<h3>Age-up choices:</h3>';
-      html += '<ul>';
-      for (const [age, choice] of Object.entries(result.ageUps)) {
-        html += `<li>Age ${age}: ${choice}</li>`;
-      }
-      html += '</ul>';
-      resultDiv.innerHTML = html;
-    }
-
-    function displayAoMResult(result) {
-      const resultDiv = document.getElementById('result');
-      let html = `<h2>AoM Random Major God: ${result.civilization}</h2>`;
-      html += `<h3>Major God: ${result.majorGod}</h3>`;
-      html += '<h3>Minor Gods:</h3>';
-      html += '<ul>';
-      for (const [age, god] of Object.entries(result.minorGods)) {
-        html += `<li>${age} Age: ${god}</li>`;
-      }
-      html += '</ul>';
-      resultDiv.innerHTML = html;
-    }
-
+    // Event listeners
     document.getElementById('generateAoE4Btn').addEventListener('click', () => {
       const result = generateRandomAoE4Civ();
       document.getElementById('result').innerHTML = `<h2>Selected Civilization: ${result.name}</h2>`;
       document.getElementById('finalizeBtn').style.display = 'inline';
+      updateWeightInputs();
     });
 
     document.getElementById('generateAoMBtn').addEventListener('click', () => {
       const result = generateRandomAoMCiv();
       document.getElementById('result').innerHTML = `<h2>Selected Civilization: ${result.name}</h2><h3>Major God: ${result.god}</h3>`;
       document.getElementById('finalizeBtn').style.display = 'inline';
+      updateWeightInputs();
     });
 
     document.getElementById('finalizeBtn').addEventListener('click', () => {
+      console.log("Finalize button clicked");
       if (currentAoE4Civ) {
         finalizeAoE4Selection();
       } else if (currentAoMCiv) {
@@ -559,8 +544,8 @@
       document.getElementById('weights').innerHTML = '';
     });
 
-    // Call this function to create the weight inputs when the page loads
-    updateWeightInputs();
+    // Initialize weights div
+    updateWeightInputs();  
   </script>
 </body>
 
