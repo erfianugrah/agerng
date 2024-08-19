@@ -143,7 +143,15 @@ function finalizeAoMSelection(addToHistory = true) {
     minorGods,
   };
   if (addToHistory) {
-    addToHistory(result);
+    try {
+      if (typeof window.addToHistory === 'function') {
+        window.addToHistory(result);
+      } else {
+        console.warn('addToHistory is not a function. History will not be updated.');
+      }
+    } catch (error) {
+      console.error('Error while adding to history:', error);
+    }
   }
   return result;
 }

@@ -80,7 +80,6 @@ body {
 }
 
 .game-box:hover {
-	transform: translateY(-5px);
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -243,6 +242,15 @@ li:hover {
 
 .export-buttons {
 	margin-top: auto;
+	display: flex;
+	gap: 10px;
+	justify-content: space-between;
+}
+
+.export-buttons button {
+	flex: 1;
+	padding: 10px 15px;
+	font-size: 14px;
 }
 
 .result-container {
