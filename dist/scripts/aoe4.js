@@ -260,7 +260,7 @@ function displayAoE4Result(result, isFinalized = false) {
   }
   html += '</ul>';
   if (isFinalized) {
-    html += '<p><strong>This result has been finalized and added to history.</strong></p>';
+    html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
   resultDiv.innerHTML = html;
 }
