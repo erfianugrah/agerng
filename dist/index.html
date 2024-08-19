@@ -97,11 +97,25 @@
     #result li:hover {
       background-color: #edf2f7;
     }
+
+    .weight-inputs {
+      margin-bottom: 20px;
+    }
+
+    .weight-inputs div {
+      margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+    }
   </style>
 </head>
 
 <body>
   <h1>AoE IV and AoM RNG</h1>
+  <div class="weight-inputs" id="aoe4Weights"></div>
+  <div class="weight-inputs" id="aomWeights"></div>
   <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
   <button id="generateAoMBtn">Generate AoM Major God</button>
   <div id="result"></div>
@@ -328,6 +342,55 @@
     };
 
 
+    let aoe4Weights = {};
+    let aomWeights = {};
+
+    function initializeWeights() {
+      for (let civ in aoe4AgeUpOptions) {
+        aoe4Weights[civ] = {};
+        for (let age in aoe4AgeUpOptions[civ]) {
+          if (Array.isArray(aoe4AgeUpOptions[civ][age])) {
+            aoe4Weights[civ][age] = [0.5, 0.5];
+          }
+        }
+      }
+
+      for (let civ in aomGods) {
+        aomWeights[civ] = {};
+        for (let majorGod in aomGods[civ].minor) {
+          aomWeights[civ][majorGod] = {
+            "Classical": [0.5, 0.5],
+            "Heroic": [0.5, 0.5],
+            "Mythic": [0.5, 0.5]
+          };
+        }
+      }
+    }
+
+    function updateAoE4Weight(civ, age, index, value) {
+      value = parseFloat(value);
+      aoe4Weights[civ][age][index] = value;
+      aoe4Weights[civ][age][1 - index] = 1 - value;
+    }
+
+    function updateAoMWeight(civ, majorGod, age, index, value) {
+      value = parseFloat(value);
+      aomWeights[civ][majorGod][age][index] = value;
+      aomWeights[civ][majorGod][age][1 - index] = 1 - value;
+    }
+
+    function weightedRandomChoice(options, weights) {
+      const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+      let random = Math.random() * totalWeight;
+      for (let i = 0; i < options.length; i++) {
+        if (random < weights[i]) {
+          return options[i];
+        }
+        random -= weights[i];
+      }
+      return options[options.length - 1];
+    }
+
     function generateRandomAoE4Civ() {
       const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
       const ageUps = {};
@@ -358,7 +421,8 @@
       } else {
         for (const age of ["II", "III", "IV"]) {
           const options = aoe4AgeUpOptions[civ][age];
-          ageUps[age] = options[Math.floor(Math.random() * options.length)];
+          const weights = aoe4Weights[civ][age];
+          ageUps[age] = weightedRandomChoice(options, weights);
         }
       }
       return {civilization: civ, ageUps};
@@ -371,7 +435,8 @@
 
       for (const age of ["Classical", "Heroic", "Mythic"]) {
         const options = aomGods[civ].minor[majorGod][age];
-        minorGods[age] = options[Math.floor(Math.random() * options.length)];
+        const weights = aomWeights[civ][majorGod][age];
+        minorGods[age] = weightedRandomChoice(options, weights);
       }
 
       return {civilization: civ, majorGod, minorGods};
@@ -402,6 +467,10 @@
       resultDiv.innerHTML = html;
     }
 
+    // Initialize weights
+    initializeWeights();
+
+    // Event listeners
     document.getElementById('generateAoE4Btn').addEventListener('click', () => {
       const result = generateRandomAoE4Civ();
       displayAoE4Result(result);
@@ -411,7 +480,49 @@
       const result = generateRandomAoMCiv();
       displayAoMResult(result);
     });
-  </script>
+
+    // Function to create weight input fields
+    function createWeightInputs() {
+      const aoe4WeightsDiv = document.getElementById('aoe4Weights');
+      const aomWeightsDiv = document.getElementById('aomWeights');
+
+      for (let civ in aoe4AgeUpOptions) {
+        for (let age in aoe4AgeUpOptions[civ]) {
+          if (Array.isArray(aoe4AgeUpOptions[civ][age])) {
+            const options = aoe4AgeUpOptions[civ][age];
+            aoe4WeightsDiv.innerHTML += `
+          <div>
+            ${civ} - Age ${age}:
+            ${options[0]} <input type="number" min="0" max="1" step="0.1" value="0.5" 
+              onchange="updateAoE4Weight('${civ}', '${age}', 0, this.value)">
+            ${options[1]} <input type="number" min="0" max="1" step="0.1" value="0.5" 
+              onchange="updateAoE4Weight('${civ}', '${age}', 1, this.value)">
+          </div>
+        `;
+          }
+        }
+      }
+
+      for (let civ in aomGods) {
+        for (let majorGod of aomGods[civ].major) {
+          for (let age in aomGods[civ].minor[majorGod]) {
+            const options = aomGods[civ].minor[majorGod][age];
+            aomWeightsDiv.innerHTML += `
+          <div>
+            ${civ} - ${majorGod} - ${age} Age:
+            ${options[0]} <input type="number" min="0" max="1" step="0.1" value="0.5" 
+              onchange="updateAoMWeight('${civ}', '${majorGod}', '${age}', 0, this.value)">
+            ${options[1]} <input type="number" min="0" max="1" step="0.1" value="0.5" 
+              onchange="updateAoMWeight('${civ}', '${majorGod}', '${age}', 1, this.value)">
+          </div>
+        `;
+          }
+        }
+      }
+    }
+
+    // Call this function to create the weight inputs when the page loads
+    createWeightInputs();  </script>
 </body>
 
 </html>
