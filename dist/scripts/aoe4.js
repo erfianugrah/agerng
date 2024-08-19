@@ -22,6 +22,44 @@ function generateRandomAoE4Civ() {
   return currentAoE4Civ;
 }
 
+function updateAoE4Weight(key, index, value) {
+  console.log(`Updating AoE4 weight: key=${key}, index=${index}, value=${value}`);
+  value = parseFloat(value);
+
+  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
+    const totalWeight = currentAoE4Civ.weights.wings.reduce(
+      (sum, w, i) => (i !== index ? sum + w : sum),
+      0
+    );
+    currentAoE4Civ.weights.wings[index] = value;
+    const scaleFactor = (1 - value) / totalWeight;
+    currentAoE4Civ.weights.wings.forEach((w, i) => {
+      if (i !== index) currentAoE4Civ.weights.wings[i] *= scaleFactor;
+    });
+  } else {
+    currentAoE4Civ.weights[key][index] = value;
+    currentAoE4Civ.weights[key][1 - index] = 1 - value;
+  }
+
+  // Update the displayed values
+  const weightsDiv = document.getElementById('aoe4Weights');
+  const sliders = weightsDiv.querySelectorAll('.aoe4-slider');
+  sliders.forEach((slider) => {
+    const sliderKey = slider.dataset.key;
+    const sliderIndex = parseInt(slider.dataset.index);
+    if (sliderKey === key) {
+      if (sliderIndex === index) {
+        slider.value = value;
+        slider.nextElementSibling.textContent = (value * 100).toFixed(0) + '%';
+      } else {
+        const otherValue = currentAoE4Civ.weights[key][1 - index];
+        slider.value = otherValue;
+        slider.nextElementSibling.textContent = (otherValue * 100).toFixed(0) + '%';
+      }
+    }
+  });
+}
+
 function updateAoE4WeightInputs() {
   console.log('Updating AoE4 weight inputs');
   const weightsDiv = document.getElementById('aoe4Weights');
@@ -37,13 +75,13 @@ function updateAoE4WeightInputs() {
     const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
     wings.forEach((wing, index) => {
       html += `
-      <div class="weight-item">
-        <span class="weight-label">${option}</span>
-        <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
-          data-key="${age}" data-index="${index}">
-        <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
-      </div>
-    `;
+        <div class="weight-item">
+          <span class="weight-label">${wing}</span>
+          <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
+            data-key="wings" data-index="${index}">
+          <span class="weight-value">${(currentAoE4Civ.weights.wings[index] * 100).toFixed(0)}%</span>
+        </div>
+      `;
     });
     html += '</div>';
   } else {
@@ -72,66 +110,41 @@ function updateAoE4WeightInputs() {
   const sliders = weightsDiv.querySelectorAll('.aoe4-slider');
   console.log(`Found ${sliders.length} AoE4 sliders`);
   sliders.forEach((slider) => {
-    slider.addEventListener('input', handleAoE4SliderInput);
+    slider.addEventListener('mousedown', startAoE4Dragging);
+    slider.addEventListener('touchstart', startAoE4Dragging);
   });
 }
 
-function updateAoE4Weight(key, index, value) {
-  console.log(`Updating AoE4 weight: key=${key}, index=${index}, value=${value}`);
-  value = parseFloat(value);
-
-  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
-    // Existing logic for Abbasid Dynasty and Ayyubids
-    const totalWeight = currentAoE4Civ.weights.wings.reduce(
-      (sum, w, i) => (i !== index ? sum + w : sum),
-      0
-    );
-    currentAoE4Civ.weights.wings[index] = value;
-    const scaleFactor = (1 - value) / totalWeight;
-    currentAoE4Civ.weights.wings.forEach((w, i) => {
-      if (i !== index) currentAoE4Civ.weights.wings[i] *= scaleFactor;
-    });
-  } else {
-    // New logic for other civilizations
-    const oldValue = currentAoE4Civ.weights[key][index];
-    const change = value - oldValue;
-
-    currentAoE4Civ.weights[key][index] = value;
-    currentAoE4Civ.weights[key][1 - index] = Math.max(
-      0,
-      Math.min(1, currentAoE4Civ.weights[key][1 - index] - change)
-    );
-
-    // Normalize to ensure sum is 1
-    const sum = currentAoE4Civ.weights[key][0] + currentAoE4Civ.weights[key][1];
-    currentAoE4Civ.weights[key][0] /= sum;
-    currentAoE4Civ.weights[key][1] /= sum;
-  }
-
-  console.log('Updated AoE4 weights:', currentAoE4Civ.weights);
-  updateAoE4WeightInputs();
-}
-
-function updateAoE4WeightDisplay() {
-  const sliders = document.querySelectorAll('.aoe4-slider');
-  sliders.forEach((slider) => {
-    const key = slider.dataset.key;
-    const index = parseInt(slider.dataset.index);
-    slider.value = currentAoE4Civ.weights[key][index];
-    const displayElement = slider.nextElementSibling;
-    if (displayElement) {
-      displayElement.textContent = `${(currentAoE4Civ.weights[key][index] * 100).toFixed(0)}%`;
-    }
-  });
-}
-
-function handleAoE4SliderInput(event) {
-  console.log('AoE4 Slider input event triggered');
+function startAoE4Dragging(event) {
+  event.preventDefault();
   const slider = event.target;
   const key = slider.dataset.key;
   const index = parseInt(slider.dataset.index);
-  const value = parseFloat(slider.value);
-  updateAoE4Weight(key, index, value);
+
+  function onMove(moveEvent) {
+    moveEvent.preventDefault();
+    const newValue = calculateAoE4SliderValue(slider, moveEvent);
+    updateAoE4Weight(key, index, newValue);
+  }
+
+  function onEnd() {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+  }
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchmove', onMove);
+  document.addEventListener('touchend', onEnd);
+}
+
+function calculateAoE4SliderValue(slider, event) {
+  const rect = slider.getBoundingClientRect();
+  const x = event.type.startsWith('touch') ? event.touches[0].clientX : event.clientX;
+  const position = (x - rect.left) / rect.width;
+  return Math.max(0, Math.min(1, position));
 }
 
 function finalizeAoE4Selection() {
@@ -202,3 +215,6 @@ function displayAoE4Result(result) {
 // - aoe4AyyubidBonuses (object containing bonus options for Ayyubids)
 // - weightedRandomChoice(options, weights) (function to choose an option based on weights)
 // - addToHistory(result) (function to add the result to history)
+
+// Make sure to call generateRandomAoE4Civ() when initializing or changing civilizations
+// generateRandomAoE4Civ();
