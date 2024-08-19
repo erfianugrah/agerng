@@ -521,7 +521,10 @@
     }
 
     function finalizeAoMSelection() {
-      if (!currentAoMCiv) return;
+      if (!currentAoMCiv) {
+        console.log("No AoM civilization selected");
+        return;
+      }
 
       console.log("Finalizing AoM selection for", currentAoMCiv.name, "-", currentAoMCiv.god);
 
@@ -533,6 +536,20 @@
 
       console.log("AoM minor gods:", minorGods);
       displayAoMResult({civilization: currentAoMCiv.name, majorGod: currentAoMCiv.god, minorGods});
+    }
+
+    function displayAoMResult(result) {
+      const resultDiv = document.getElementById('result');
+      let html = `<h2>AoM Random Civilization: ${result.civilization}</h2>`;
+      html += `<h3>Major God: ${result.majorGod}</h3>`;
+      html += '<h3>Minor Gods:</h3>';
+      html += '<ul>';
+      for (const [age, god] of Object.entries(result.minorGods)) {
+        html += `<li>${age} Age: ${god}</li>`;
+      }
+      html += '</ul>';
+      resultDiv.innerHTML = html;
+      console.log("Displayed AoM result:", result);
     }
 
     // Event listeners
@@ -556,13 +573,15 @@
         finalizeAoE4Selection();
       } else if (currentAoMCiv) {
         finalizeAoMSelection();
+      } else {
+        console.log("No civilization selected");
       }
       document.getElementById('finalizeBtn').style.display = 'none';
       document.getElementById('weights').innerHTML = '';
     });
 
     // Initialize weights div
-    updateWeightInputs();  
+    updateWeightInputs();
   </script>
 </body>
 
