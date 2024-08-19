@@ -36,39 +36,49 @@ function updateHistoryDisplay() {
 
 function displayHistoryItem(index) {
   const item = history[index];
+  const previewDiv = document.getElementById('historyPreview');
+  let html = '';
+
   if (item.game === 'AoE IV') {
-    displayAoE4Result(item);
+    html = `<h3>AoE IV: ${item.civilization}</h3>`;
+    html += '<ul>';
+    for (const [age, choice] of Object.entries(item.ageUps)) {
+      html += `<li>Age ${age}: ${choice}</li>`;
+    }
+    html += '</ul>';
   } else if (item.game === 'AoM') {
-    displayAoMResult(item);
+    html = `<h3>AoM: ${item.civilization} - ${item.majorGod}</h3>`;
+    html += '<ul>';
+    for (const [age, god] of Object.entries(item.minorGods)) {
+      html += `<li>${age} Age: ${god}</li>`;
+    }
+    html += '</ul>';
   }
+
+  previewDiv.innerHTML = html;
+  previewDiv.style.display = 'block';
 }
 
 function displayAoE4Result(result) {
   const resultDiv = document.getElementById('aoe4Result');
-  let html = `<h3>AoE IV Result: ${result.civilization}</h3>`;
+  let html = `<h3>Result: ${result.civilization}</h3>`;
   html += '<ul>';
   for (const [age, choice] of Object.entries(result.ageUps)) {
     html += `<li>Age ${age}: ${choice}</li>`;
   }
   html += '</ul>';
   resultDiv.innerHTML = html;
-
-  // Clear AoM result
-  document.getElementById('aomResult').innerHTML = '';
 }
 
 function displayAoMResult(result) {
   const resultDiv = document.getElementById('aomResult');
-  let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
+  let html = `<h3>Result: ${result.civilization} - ${result.majorGod}</h3>`;
   html += '<ul>';
   for (const [age, god] of Object.entries(result.minorGods)) {
     html += `<li>${age} Age: ${god}</li>`;
   }
   html += '</ul>';
   resultDiv.innerHTML = html;
-
-  // Clear AoE IV result
-  document.getElementById('aoe4Result').innerHTML = '';
 }
 
 function exportJSON() {
@@ -333,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('aoe4Result').innerHTML =
       `<h3>Selected Civilization: ${result.name}</h3>`;
     document.getElementById('finalizeAoE4Btn').style.display = 'inline';
+    document.getElementById('historyPreview').style.display = 'none';
   });
 
   document.getElementById('generateAoMBtn').addEventListener('click', () => {
@@ -340,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('aomResult').innerHTML =
       `<h3>Selected Civilization: ${result.name}</h3><h4>Major God: ${result.god}</h4>`;
     document.getElementById('finalizeAoMBtn').style.display = 'inline';
+    document.getElementById('historyPreview').style.display = 'none';
   });
 
   document.getElementById('finalizeAoE4Btn').addEventListener('click', () => {
