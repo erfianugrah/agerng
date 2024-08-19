@@ -14,21 +14,18 @@ function updateAoMWeight(key, index, value) {
   currentAoMCiv.weights[key][1 - index] = 1 - value;
 
   // Update the displayed values
+  updateAoMWeightDisplay();
+}
+
+function updateAoMWeightDisplay() {
   const weightsDiv = document.getElementById('aomWeights');
   const sliders = weightsDiv.querySelectorAll('.weight-slider');
   sliders.forEach((slider) => {
-    const sliderKey = slider.dataset.key;
-    const sliderIndex = parseInt(slider.dataset.index);
-    if (sliderKey === key) {
-      if (sliderIndex === index) {
-        slider.value = value;
-        slider.nextElementSibling.textContent = value.toFixed(2);
-      } else {
-        const otherValue = currentAoMCiv.weights[key][1 - index];
-        slider.value = otherValue;
-        slider.nextElementSibling.textContent = otherValue.toFixed(2);
-      }
-    }
+    const key = slider.dataset.key;
+    const index = parseInt(slider.dataset.index);
+    const value = currentAoMCiv.weights[key][index];
+    slider.value = value;
+    slider.nextElementSibling.textContent = value.toFixed(2);
   });
 }
 
@@ -55,41 +52,16 @@ function updateAoMWeightInputs() {
   // Add event listeners for all sliders
   const sliders = weightsDiv.querySelectorAll('.weight-slider');
   sliders.forEach((slider) => {
-    slider.addEventListener('mousedown', startDragging);
-    slider.addEventListener('touchstart', startDragging);
+    slider.addEventListener('input', handleAoMSliderInput);
   });
 }
 
-function startDragging(event) {
-  event.preventDefault();
+function handleAoMSliderInput(event) {
   const slider = event.target;
   const key = slider.dataset.key;
   const index = parseInt(slider.dataset.index);
-
-  function onMove(moveEvent) {
-    moveEvent.preventDefault();
-    const newValue = calculateSliderValue(slider, moveEvent);
-    updateAoMWeight(key, index, newValue);
-  }
-
-  function onEnd() {
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onEnd);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend', onEnd);
-  }
-
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onEnd);
-  document.addEventListener('touchmove', onMove);
-  document.addEventListener('touchend', onEnd);
-}
-
-function calculateSliderValue(slider, event) {
-  const rect = slider.getBoundingClientRect();
-  const x = event.type.startsWith('touch') ? event.touches[0].clientX : event.clientX;
-  const position = (x - rect.left) / rect.width;
-  return Math.max(0, Math.min(1, position));
+  const value = parseFloat(slider.value);
+  updateAoMWeight(key, index, value);
 }
 
 function generateRandomAoMCiv() {
@@ -97,11 +69,14 @@ function generateRandomAoMCiv() {
   const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
   updateAoMWeightInputs();
+  updateAoMButtons();
+  document.getElementById('aomResult').innerHTML =
+    `<h3>Selected Civilization: ${currentAoMCiv.name} - ${currentAoMCiv.god}</h3>`;
   return currentAoMCiv;
 }
 
-function finalizeAoMSelection() {
-  if (!currentAoMCiv) return;
+function finalizeAoMSelection(addToHistory = true) {
+  if (!currentAoMCiv) return null;
   const minorGods = {};
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
     const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
@@ -113,11 +88,13 @@ function finalizeAoMSelection() {
     majorGod: currentAoMCiv.god,
     minorGods,
   };
-  addToHistory(result);
-  displayAoMResult(result);
+  if (addToHistory) {
+    addToHistory(result);
+  }
+  return result;
 }
 
-function displayAoMResult(result) {
+function displayAoMResult(result, isFinalized = false) {
   const resultDiv = document.getElementById('aomResult');
   let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
   html += '<ul>';
@@ -125,5 +102,75 @@ function displayAoMResult(result) {
     html += `<li>${age} Age: ${god}</li>`;
   }
   html += '</ul>';
+  if (isFinalized) {
+    html += '<p><strong>This result has been finalized and added to history.</strong></p>';
+  }
   resultDiv.innerHTML = html;
 }
+
+function updateAoMButtons() {
+  const additionalButtonsDiv = document.getElementById('aomAdditionalButtons');
+  const generateBtn = document.getElementById('generateAoMBtn');
+  const finalizeBtn = document.getElementById('finalizeAoMBtn');
+
+  if (!additionalButtonsDiv || !generateBtn || !finalizeBtn) {
+    console.error('One or more AoM button elements not found');
+    return;
+  }
+
+  // Update additional buttons
+  additionalButtonsDiv.innerHTML = currentAoMCiv
+    ? `
+    <button id="rerollAoMGodsBtn">Re-roll Gods</button>
+  `
+    : '';
+
+  // Set up event listeners
+  if (currentAoMCiv) {
+    document.getElementById('rerollAoMGodsBtn').addEventListener('click', rerollAoMGods);
+  }
+
+  // Remove existing event listeners before adding new ones
+  finalizeBtn.removeEventListener('click', finalizeAoMButtonHandler);
+  if (currentAoMCiv) {
+    finalizeBtn.addEventListener('click', finalizeAoMButtonHandler);
+  }
+
+  // Show/hide buttons as needed
+  generateBtn.style.display = currentAoMCiv ? 'none' : 'inline-block';
+  finalizeBtn.style.display = currentAoMCiv ? 'inline-block' : 'none';
+  additionalButtonsDiv.style.display = currentAoMCiv ? 'block' : 'none';
+}
+
+function rerollAoMGods() {
+  console.log('Re-rolling gods for current AoM civilization');
+  if (!currentAoMCiv) {
+    console.error('No current AoM civilization selected');
+    return;
+  }
+
+  const result = finalizeAoMSelection(false);
+  displayAoMResult(result);
+}
+
+function finalizeAoMButtonHandler() {
+  const result = finalizeAoMSelection(true);
+  if (result) {
+    displayAoMResult(result, true);
+    resetAoMState();
+  } else {
+    console.error('Failed to finalize AoM selection');
+  }
+}
+
+function resetAoMState() {
+  currentAoMCiv = null;
+  updateAoMButtons();
+  document.getElementById('aomWeights').innerHTML = '';
+}
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+  updateAoMButtons();
+  document.getElementById('generateAoMBtn').addEventListener('click', generateRandomAoMCiv);
+});
