@@ -44,7 +44,7 @@ function updateAoE4WeightInputs() {
         <div class="weight-item">
           <span class="weight-label">${wing}</span>
           <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
-            oninput="updateAoE4Weight('wings', ${index}, this.value)">
+            data-key="wings" data-index="${index}">
           <span class="weight-value">${currentAoE4Civ.weights.wings[index].toFixed(2)}</span>
         </div>
       `;
@@ -59,7 +59,7 @@ function updateAoE4WeightInputs() {
             <div class="weight-item">
               <span class="weight-label">${option}</span>
               <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
-                oninput="updateAoE4Weight('${age}', ${index}, this.value)">
+                data-key="${age}" data-index="${index}">
               <span class="weight-value">${currentAoE4Civ.weights[age][index].toFixed(2)}</span>
             </div>
           `;
@@ -70,6 +70,54 @@ function updateAoE4WeightInputs() {
   }
 
   weightsDiv.innerHTML = html;
+
+  // Add event listeners for all sliders
+  const sliders = weightsDiv.querySelectorAll('.weight-slider');
+  sliders.forEach((slider) => {
+    slider.addEventListener('input', handleSliderInput);
+    slider.addEventListener('mousedown', startDragging);
+    slider.addEventListener('touchstart', startDragging);
+  });
+}
+
+function handleSliderInput(event) {
+  const slider = event.target;
+  const key = slider.dataset.key;
+  const index = parseInt(slider.dataset.index);
+  const value = parseFloat(slider.value);
+  updateAoE4Weight(key, index, value);
+}
+
+function startDragging(event) {
+  event.preventDefault();
+  const slider = event.target;
+  const key = slider.dataset.key;
+  const index = parseInt(slider.dataset.index);
+
+  function onMove(moveEvent) {
+    moveEvent.preventDefault();
+    const newValue = calculateSliderValue(slider, moveEvent);
+    updateAoE4Weight(key, index, newValue);
+  }
+
+  function onEnd() {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+  }
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchmove', onMove);
+  document.addEventListener('touchend', onEnd);
+}
+
+function calculateSliderValue(slider, event) {
+  const rect = slider.getBoundingClientRect();
+  const x = event.type.startsWith('touch') ? event.touches[0].clientX : event.clientX;
+  const position = (x - rect.left) / rect.width;
+  return Math.max(0, Math.min(1, position));
 }
 
 function generateRandomAoE4Civ() {
