@@ -1,6 +1,7 @@
 let currentAoE4Civ = null;
 
 function initializeAoE4Weights(civ) {
+  console.log(`Initializing weights for ${civ}`);
   if (civ === 'Abbasid Dynasty' || civ === 'Ayyubids') {
     return { wings: [0.25, 0.25, 0.25, 0.25] };
   } else {
@@ -13,27 +14,22 @@ function initializeAoE4Weights(civ) {
   }
 }
 
-function updateAoE4Weight(key, index, value) {
-  value = parseFloat(value);
-  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
-    const totalWeight = currentAoE4Civ.weights.wings.reduce(
-      (sum, w, i) => (i !== index ? sum + w : sum),
-      0
-    );
-    currentAoE4Civ.weights.wings[index] = value;
-    const scaleFactor = (1 - value) / totalWeight;
-    currentAoE4Civ.weights.wings.forEach((w, i) => {
-      if (i !== index) currentAoE4Civ.weights.wings[i] *= scaleFactor;
-    });
-  } else {
-    currentAoE4Civ.weights[key][index] = value;
-    currentAoE4Civ.weights[key][1 - index] = 1 - value;
-  }
+function generateRandomAoE4Civ() {
+  console.log('Generating random AoE4 civilization');
+  const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
+  currentAoE4Civ = { name: civ, weights: initializeAoE4Weights(civ) };
   updateAoE4WeightInputs();
+  return currentAoE4Civ;
 }
 
 function updateAoE4WeightInputs() {
+  console.log('Updating AoE4 weight inputs');
   const weightsDiv = document.getElementById('aoe4Weights');
+  if (!weightsDiv) {
+    console.error('aoe4Weights div not found');
+    return;
+  }
+
   let html = '<h3>Weights for ' + currentAoE4Civ.name + ':</h3>';
 
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
@@ -69,10 +65,12 @@ function updateAoE4WeightInputs() {
     }
   }
 
+  console.log('Generated HTML for weights:', html);
   weightsDiv.innerHTML = html;
 
   // Add event listeners for all sliders
   const sliders = weightsDiv.querySelectorAll('.weight-slider');
+  console.log(`Found ${sliders.length} sliders`);
   sliders.forEach((slider) => {
     slider.addEventListener('input', handleSliderInput);
     slider.addEventListener('mousedown', startDragging);
@@ -80,7 +78,32 @@ function updateAoE4WeightInputs() {
   });
 }
 
+function updateAoE4Weight(key, index, value) {
+  console.log(`Updating weight: key=${key}, index=${index}, value=${value}`);
+  value = parseFloat(value);
+  if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
+    const totalWeight = currentAoE4Civ.weights.wings.reduce(
+      (sum, w, i) => (i !== index ? sum + w : sum),
+      0
+    );
+    currentAoE4Civ.weights.wings[index] = value;
+    const scaleFactor = (1 - value) / totalWeight;
+    currentAoE4Civ.weights.wings.forEach((w, i) => {
+      if (i !== index) currentAoE4Civ.weights.wings[i] *= scaleFactor;
+    });
+  } else {
+    currentAoE4Civ.weights[key][index] = value;
+    currentAoE4Civ.weights[key][1 - index] = 1 - value;
+  }
+  console.log('Updated weights:', currentAoE4Civ.weights);
+  updateAoE4WeightInputs();
+}
+
 function handleSliderInput(event) {
+  console.log('Slider input event triggered');
+  console.log('Slider value:', event.target.value);
+  console.log('Slider key:', event.target.dataset.key);
+  console.log('Slider index:', event.target.dataset.index);
   const slider = event.target;
   const key = slider.dataset.key;
   const index = parseInt(slider.dataset.index);
@@ -120,15 +143,12 @@ function calculateSliderValue(slider, event) {
   return Math.max(0, Math.min(1, position));
 }
 
-function generateRandomAoE4Civ() {
-  const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
-  currentAoE4Civ = { name: civ, weights: initializeAoE4Weights(civ) };
-  updateAoE4WeightInputs();
-  return currentAoE4Civ;
-}
-
 function finalizeAoE4Selection() {
-  if (!currentAoE4Civ) return;
+  console.log('Finalizing AoE4 selection');
+  if (!currentAoE4Civ) {
+    console.error('No current AoE4 civilization selected');
+    return;
+  }
 
   const ageUps = {};
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
@@ -170,7 +190,12 @@ function finalizeAoE4Selection() {
 }
 
 function displayAoE4Result(result) {
+  console.log('Displaying AoE4 result', result);
   const resultDiv = document.getElementById('aoe4Result');
+  if (!resultDiv) {
+    console.error('aoe4Result div not found');
+    return;
+  }
   let html = `<h3>Result: ${result.civilization}</h3>`;
   html += '<ul>';
   for (const [age, choice] of Object.entries(result.ageUps)) {
