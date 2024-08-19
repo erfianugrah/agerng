@@ -114,10 +114,10 @@
 
 <body>
   <h1>AoE IV and AoM RNG</h1>
-  <div class="weight-inputs" id="aoe4Weights"></div>
-  <div class="weight-inputs" id="aomWeights"></div>
   <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
   <button id="generateAoMBtn">Generate AoM Major God</button>
+  <div id="weights"></div>
+  <button id="finalizeBtn" style="display:none;">Finalize Selection</button>
   <div id="result"></div>
 
   <script>
@@ -537,14 +537,15 @@
       resultDiv.innerHTML = html;
     }
 
-    // Event listeners
     document.getElementById('generateAoE4Btn').addEventListener('click', () => {
-      generateRandomAoE4Civ();
+      const result = generateRandomAoE4Civ();
+      document.getElementById('result').innerHTML = `<h2>Selected Civilization: ${result.name}</h2>`;
       document.getElementById('finalizeBtn').style.display = 'inline';
     });
 
     document.getElementById('generateAoMBtn').addEventListener('click', () => {
-      generateRandomAoMCiv();
+      const result = generateRandomAoMCiv();
+      document.getElementById('result').innerHTML = `<h2>Selected Civilization: ${result.name}</h2><h3>Major God: ${result.god}</h3>`;
       document.getElementById('finalizeBtn').style.display = 'inline';
     });
 
@@ -554,7 +555,12 @@
       } else if (currentAoMCiv) {
         finalizeAoMSelection();
       }
-    }); 
+      document.getElementById('finalizeBtn').style.display = 'none';
+      document.getElementById('weights').innerHTML = '';
+    });
+
+    // Call this function to create the weight inputs when the page loads
+    updateWeightInputs();
   </script>
 </body>
 
