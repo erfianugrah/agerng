@@ -9,44 +9,50 @@
 </head>
 
 <body>
-  <aside class="history-panel">
-    <h2>History</h2>
-    <div id="historyList" class="history-list"></div>
-    <div class="export-buttons">
-      <button id="exportJSON">Export as JSON</button>
-      <button id="exportCSV">Export as CSV</button>
-    </div>
-  </aside>
-  <main class="main-content">
-    <div id="historyPreview" class="history-preview"></div>
-    <div class="game-columns">
-      <div class="game-box" id="aoe4Box">
-        <h2>Age of Empires IV</h2>
-        <div class="button-group">
-          <div class="button-container">
-            <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
-            <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
+  <div class="page-wrapper">
+    <aside class="history-panel">
+      <h2>History</h2>
+      <div id="historyList" class="history-list"></div>
+      <div class="export-buttons">
+        <button id="exportJSON">Export as JSON</button>
+        <button id="exportCSV">Export as CSV</button>
+      </div>
+    </aside>
+    <main class="main-content">
+      <div id="historyPreview" class="history-preview"></div>
+      <div class="game-columns">
+        <div class="game-box" id="aoe4Box">
+          <h2>Age of Empires IV</h2>
+          <div class="button-group">
+            <div class="button-container">
+              <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
+              <button id="finalizeAoE4Btn" style="display:none;">Finalize AoE IV Selection</button>
+            </div>
+            <div id="aoe4AdditionalButtons" class="additional-buttons"></div>
           </div>
-          <div id="aoe4AdditionalButtons" class="additional-buttons"></div>
+          <div id="aoe4Weights" class="weight-inputs"></div>
+          <div id="aoe4Result" class="result-container"></div>
         </div>
-        <div id="aoe4Weights" class="weight-inputs"></div>
-        <div id="aoe4Result" class="result-container"></div>
-      </div>
-      <div class="game-box" id="aomBox">
-        <h2>Age of Mythology</h2>
-        <div class="button-container">
-          <button id="generateAoMBtn">Generate AoM Major God</button>
-          <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
+        <div class="game-box" id="aomBox">
+          <h2>Age of Mythology</h2>
+          <div class="button-group">
+            <div class="button-container">
+              <button id="generateAoMBtn">Generate AoM Major God</button>
+              <button id="finalizeAoMBtn" style="display:none;">Finalize AoM Selection</button>
+            </div>
+            <div id="aomAdditionalButtons" class="additional-buttons"></div>
+          </div>
+          <div id="aomWeights" class="weight-inputs"></div>
+          <div id="aomResult" class="result-container"></div>
         </div>
-        <div id="aomWeights" class="weight-inputs"></div>
-        <div id="aomResult" class="result-container"></div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <footer class="site-footer">
     <p>Created by Erfi Anugrah</p>
-    <p>Age of Empires IV© Microsoft Corporation. agerng was created under Microsoft's "Game Content Usage Rules"
+    <p>Age of Empires IV© Microsoft Corporation. agerng.pages.dev was created under Microsoft's "Game Content Usage
+      Rules"
       using assets from Age of Empires IV, and it is not endorsed by or affiliated with Microsoft.</p>
   </footer>
 

@@ -8,6 +8,17 @@ function initializeAoMWeights(civ, god) {
   };
 }
 
+function generateRandomAoMCiv() {
+  const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
+  const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
+  currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
+  updateAoMWeightInputs();
+  updateAoMButtons();
+  document.getElementById('aomResult').innerHTML =
+    `<h3>Selected Civilization: ${currentAoMCiv.name} - ${currentAoMCiv.god}</h3>`;
+  return currentAoMCiv;
+}
+
 function updateAoMWeight(key, index, value) {
   value = parseFloat(value);
   currentAoMCiv.weights[key][index] = value;
@@ -25,12 +36,22 @@ function updateAoMWeightDisplay() {
     const index = parseInt(slider.dataset.index);
     const value = currentAoMCiv.weights[key][index];
     slider.value = value;
-    slider.nextElementSibling.textContent = value.toFixed(2);
+    slider.nextElementSibling.textContent = (value * 100).toFixed(0) + '%';
   });
 }
 
 function updateAoMWeightInputs() {
   const weightsDiv = document.getElementById('aomWeights');
+  if (!weightsDiv) {
+    console.error('aomWeights div not found');
+    return;
+  }
+
+  if (!currentAoMCiv) {
+    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
+    return;
+  }
+
   let html = `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
     const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
@@ -41,7 +62,7 @@ function updateAoMWeightInputs() {
           <span class="weight-label">${option}</span>
           <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
             data-key="${age}" data-index="${index}">
-          <span class="weight-value">${currentAoMCiv.weights[age][index].toFixed(2)}</span>
+          <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
         </div>
       `;
     });
@@ -62,50 +83,6 @@ function handleAoMSliderInput(event) {
   const index = parseInt(slider.dataset.index);
   const value = parseFloat(slider.value);
   updateAoMWeight(key, index, value);
-}
-
-function generateRandomAoMCiv() {
-  const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
-  const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
-  currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
-  updateAoMWeightInputs();
-  updateAoMButtons();
-  document.getElementById('aomResult').innerHTML =
-    `<h3>Selected Civilization: ${currentAoMCiv.name} - ${currentAoMCiv.god}</h3>`;
-  return currentAoMCiv;
-}
-
-function finalizeAoMSelection(addToHistory = true) {
-  if (!currentAoMCiv) return null;
-  const minorGods = {};
-  for (const age of ['Classical', 'Heroic', 'Mythic']) {
-    const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
-    minorGods[age] = weightedRandomChoice(options, currentAoMCiv.weights[age]);
-  }
-  const result = {
-    game: 'AoM',
-    civilization: currentAoMCiv.name,
-    majorGod: currentAoMCiv.god,
-    minorGods,
-  };
-  if (addToHistory) {
-    addToHistory(result);
-  }
-  return result;
-}
-
-function displayAoMResult(result, isFinalized = false) {
-  const resultDiv = document.getElementById('aomResult');
-  let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
-  html += '<ul>';
-  for (const [age, god] of Object.entries(result.minorGods)) {
-    html += `<li>${age} Age: ${god}</li>`;
-  }
-  html += '</ul>';
-  if (isFinalized) {
-    html += '<p><strong>This result has been finalized and added to history.</strong></p>';
-  }
-  resultDiv.innerHTML = html;
 }
 
 function updateAoMButtons() {
@@ -143,7 +120,6 @@ function updateAoMButtons() {
 }
 
 function rerollAoMGods() {
-  console.log('Re-rolling gods for current AoM civilization');
   if (!currentAoMCiv) {
     console.error('No current AoM civilization selected');
     return;
@@ -151,6 +127,25 @@ function rerollAoMGods() {
 
   const result = finalizeAoMSelection(false);
   displayAoMResult(result);
+}
+
+function finalizeAoMSelection(addToHistory = true) {
+  if (!currentAoMCiv) return null;
+  const minorGods = {};
+  for (const age of ['Classical', 'Heroic', 'Mythic']) {
+    const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
+    minorGods[age] = weightedRandomChoice(options, currentAoMCiv.weights[age]);
+  }
+  const result = {
+    game: 'AoM',
+    civilization: currentAoMCiv.name,
+    majorGod: currentAoMCiv.god,
+    minorGods,
+  };
+  if (addToHistory) {
+    addToHistory(result);
+  }
+  return result;
 }
 
 function finalizeAoMButtonHandler() {
@@ -166,7 +161,21 @@ function finalizeAoMButtonHandler() {
 function resetAoMState() {
   currentAoMCiv = null;
   updateAoMButtons();
-  document.getElementById('aomWeights').innerHTML = '';
+  updateAoMWeightInputs(); // This will now clear the weights div
+}
+
+function displayAoMResult(result, isFinalized = false) {
+  const resultDiv = document.getElementById('aomResult');
+  let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
+  html += '<ul>';
+  for (const [age, god] of Object.entries(result.minorGods)) {
+    html += `<li>${age} Age: ${god}</li>`;
+  }
+  html += '</ul>';
+  if (isFinalized) {
+    html += '<p><strong>This result has been finalized and added to history.</strong></p>';
+  }
+  resultDiv.innerHTML = html;
 }
 
 // Initial setup
@@ -174,3 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAoMButtons();
   document.getElementById('generateAoMBtn').addEventListener('click', generateRandomAoMCiv);
 });
+
+// Assume weightedRandomChoice function is defined elsewhere
+// function weightedRandomChoice(options, weights) { ... }
+
+// Assume addToHistory function is defined elsewhere
+// function addToHistory(result) { ... }

@@ -22,8 +22,14 @@ body {
 	line-height: 1.6;
 	color: var(--text-color);
 	background-color: var(--background-color);
-	display: flex;
 	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.page-wrapper {
+	display: flex;
+	flex: 1;
 }
 
 .history-panel {
@@ -131,10 +137,23 @@ button:hover {
 	border-radius: var(--border-radius);
 	padding: 20px;
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+	min-height: 100px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.weight-inputs:empty::before {
+	content: "Generate a civilization to see weight options";
+	color: var(--secondary-color);
+	opacity: 0.7;
+	font-style: italic;
 }
 
 .weight-group {
 	margin-bottom: 20px;
+	width: 100%;
 }
 
 .weight-group h4 {
@@ -235,8 +254,26 @@ li:hover {
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.site-footer {
+	background-color: var(--secondary-color);
+	color: #fff;
+	text-align: center;
+	padding: 20px;
+	margin-top: auto;
+	font-size: 0.9em;
+	width: 100%;
+}
+
+.site-footer p {
+	margin: 10px 0;
+}
+
+.site-footer p:first-child {
+	font-weight: bold;
+}
+
 @media (max-width: 1200px) {
-	body {
+	.page-wrapper {
 		flex-direction: column;
 	}
 
@@ -275,26 +312,7 @@ li:hover {
 	.game-box {
 		padding: 20px;
 	}
-}
 
-.site-footer {
-	background-color: var(--secondary-color);
-	color: #fff;
-	text-align: center;
-	padding: 20px;
-	margin-top: 40px;
-	font-size: 0.9em;
-}
-
-.site-footer p {
-	margin: 10px 0;
-}
-
-.site-footer p:first-child {
-	font-weight: bold;
-}
-
-@media (max-width: 600px) {
 	.site-footer {
 		padding: 15px;
 		font-size: 0.8em;

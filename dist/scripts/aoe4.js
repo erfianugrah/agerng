@@ -1,11 +1,3 @@
-// Check for addToHistory function
-if (typeof addToHistory !== 'function') {
-  console.warn('addToHistory function not found. Using a placeholder function.');
-  window.addToHistory = function (result) {
-    console.log('History item (not saved):', result);
-  };
-}
-
 let currentAoE4Civ = null;
 
 function initializeAoE4Weights(civ) {
@@ -89,6 +81,11 @@ function updateAoE4WeightInputs() {
     return;
   }
 
+  if (!currentAoE4Civ) {
+    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
+    return;
+  }
+
   let html = '<h3>Weights for ' + currentAoE4Civ.name + ':</h3>';
 
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
@@ -150,22 +147,6 @@ function updateAoE4Buttons() {
   generateBtn.style.display = currentAoE4Civ ? 'none' : 'inline-block';
   finalizeBtn.style.display = currentAoE4Civ ? 'inline-block' : 'none';
   additionalButtonsDiv.style.display = currentAoE4Civ ? 'block' : 'none';
-}
-
-function finalizeAoE4ButtonHandler() {
-  const result = finalizeAoE4Selection(true);
-  if (result) {
-    displayAoE4Result(result, true);
-    resetAoE4State();
-  } else {
-    console.error('Failed to finalize AoE4 selection');
-  }
-}
-
-function resetAoE4State() {
-  currentAoE4Civ = null;
-  updateAoE4Buttons();
-  document.getElementById('aoe4Weights').innerHTML = '';
 }
 
 function rerollAoE4Landmarks() {
@@ -245,6 +226,22 @@ function finalizeStandardSelection() {
   return ageUps;
 }
 
+function finalizeAoE4ButtonHandler() {
+  const result = finalizeAoE4Selection(true);
+  if (result) {
+    displayAoE4Result(result, true);
+    resetAoE4State();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
+function resetAoE4State() {
+  currentAoE4Civ = null;
+  updateAoE4Buttons();
+  updateAoE4WeightInputs(); // This will now clear the weights div
+}
+
 function displayAoE4Result(result, isFinalized = false) {
   console.log('Displaying AoE4 result', result);
   const resultDiv = document.getElementById('aoe4Result');
@@ -308,7 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('generateAoE4Btn').addEventListener('click', generateRandomAoE4Civ);
 });
 
-// Ensure weightedRandomChoice is available
-if (typeof weightedRandomChoice !== 'function') {
-  console.error('weightedRandomChoice function not found. Please ensure it is defined.');
-}
+// Assume weightedRandomChoice function is defined elsewhere
+// function weightedRandomChoice(options, weights) { ... }
+
+// Assume addToHistory function is defined elsewhere
+// function addToHistory(result) { ... }
