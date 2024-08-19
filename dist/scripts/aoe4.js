@@ -1,3 +1,11 @@
+// Check for addToHistory function
+if (typeof addToHistory !== 'function') {
+  console.warn('addToHistory function not found. Using a placeholder function.');
+  window.addToHistory = function (result) {
+    console.log('History item (not saved):', result);
+  };
+}
+
 let currentAoE4Civ = null;
 
 function initializeAoE4Weights(civ) {
@@ -126,20 +134,28 @@ function updateAoE4Buttons() {
   // Set up event listeners
   document.getElementById('rerollAoE4LandmarksBtn').addEventListener('click', rerollAoE4Landmarks);
 
-  // Add event listener for finalize button
-  finalizeBtn.addEventListener('click', () => {
-    const result = finalizeAoE4Selection(true);
-    displayAoE4Result(result);
-    // Reset the UI for a new selection
-    currentAoE4Civ = null;
-    updateAoE4Buttons();
-  });
+  // Remove existing event listeners before adding new ones
+  finalizeBtn.removeEventListener('click', finalizeAoE4ButtonHandler);
+  finalizeBtn.addEventListener('click', finalizeAoE4ButtonHandler);
 
   // Show/hide buttons as needed
   generateBtn.style.display = currentAoE4Civ ? 'none' : 'inline-block';
   finalizeBtn.style.display = currentAoE4Civ ? 'inline-block' : 'none';
   additionalButtonsDiv.style.display = currentAoE4Civ ? 'block' : 'none';
 }
+
+function finalizeAoE4ButtonHandler() {
+  const result = finalizeAoE4Selection(true);
+  if (result) {
+    displayAoE4Result(result);
+    // Reset the UI for a new selection
+    currentAoE4Civ = null;
+    updateAoE4Buttons();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
 function rerollAoE4Landmarks() {
   console.log('Re-rolling landmarks for current AoE4 civilization');
   if (!currentAoE4Civ) {
@@ -155,7 +171,7 @@ function finalizeAoE4Selection(addToHistory = true) {
   console.log('Finalizing AoE4 selection');
   if (!currentAoE4Civ) {
     console.error('No current AoE4 civilization selected');
-    return;
+    return null;
   }
 
   let ageUps;
@@ -167,7 +183,11 @@ function finalizeAoE4Selection(addToHistory = true) {
 
   const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
   if (addToHistory) {
-    addToHistory(result);
+    try {
+      window.addToHistory(result);
+    } catch (error) {
+      console.error('Error while adding to history:', error);
+    }
   }
   return result;
 }
@@ -267,15 +287,13 @@ function generateStandardHTML() {
   return html;
 }
 
-// Assume weightedRandomChoice function is defined elsewhere
-// function weightedRandomChoice(options, weights) { ... }
-
-// Assume addToHistory function is defined elsewhere
-// function addToHistory(result) { ... }
-
 // Initial setup
 document.addEventListener('DOMContentLoaded', () => {
   updateAoE4Buttons();
+  document.getElementById('generateAoE4Btn').addEventListener('click', generateRandomAoE4Civ);
 });
 
-document.getElementById('generateAoE4Btn').addEventListener('click', generateRandomAoE4Civ);
+// Ensure weightedRandomChoice is available
+if (typeof weightedRandomChoice !== 'function') {
+  console.error('weightedRandomChoice function not found. Please ensure it is defined.');
+}
