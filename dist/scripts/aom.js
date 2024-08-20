@@ -16,11 +16,7 @@ function generateRandomAoMCiv() {
   console.log('Generated AoM civilization:', currentAoMCiv);
   updateAoMWeightInputs();
   updateAoMButtons();
-
-  // Add this line to generate the minor gods immediately
-  const result = finalizeAoMSelection(false);
-
-  return result;
+  return currentAoMCiv;
 }
 
 function updateAoMWeight(key, index, value) {
@@ -52,14 +48,9 @@ function updateAoMWeightInputs() {
   }
 
   if (!currentAoMCiv) {
-    weightsDiv.innerHTML =
-      '<p class="placeholder-text">Generate an Age of Mythology civilization to adjust weights.</p>';
-    weightsDiv.classList.add('weights-box-empty');
+    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
     return;
   }
-
-  // Remove the empty class
-  weightsDiv.classList.remove('weights-box-empty');
 
   let html = `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
@@ -67,13 +58,11 @@ function updateAoMWeightInputs() {
     html += `<div class="weight-group"><h4>${age} Age</h4>`;
     options.forEach((option, index) => {
       html += `
-        <div class="weight-item-wrapper">
-          <div class="weight-item">
-            <span class="weight-label">${option}</span>
-            <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
-              data-key="${age}" data-index="${index}">
-            <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
-          </div>
+        <div class="weight-item">
+          <span class="weight-label">${option}</span>
+          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
+            data-key="${age}" data-index="${index}">
+          <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
         </div>
       `;
     });
@@ -179,15 +168,7 @@ function finalizeAoMButtonHandler() {
 function resetAoMState() {
   currentAoMCiv = null;
   updateAoMButtons();
-  updateAoMWeightInputs();
-
-  // Reset result box to empty state
-  const resultDiv = document.getElementById('aomResult');
-  if (resultDiv) {
-    resultDiv.innerHTML =
-      '<p class="placeholder-text">Generate an Age of Mythology civilization to see the result here.</p>';
-    resultDiv.classList.add('result-box-empty');
-  }
+  updateAoMWeightInputs(); // This will now clear the weights div
 }
 
 function displayAoMResult(result, isFinalized = false) {
@@ -197,10 +178,6 @@ function displayAoMResult(result, isFinalized = false) {
     console.error('aomResult div not found');
     return;
   }
-
-  // Remove the empty class
-  resultDiv.classList.remove('result-box-empty');
-
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>

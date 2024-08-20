@@ -23,11 +23,7 @@ function generateRandomAoE4Civ() {
   };
   updateAoE4WeightInputs();
   updateAoE4Buttons();
-
-  // Add this line to generate the age-ups immediately
-  const ageUps = finalizeAoE4Selection(false);
-
-  return { civilization: civ, ageUps };
+  return currentAoE4Civ;
 }
 
 function updateAoE4Weight(key, index, value) {
@@ -84,14 +80,10 @@ function updateAoE4WeightInputs() {
   }
 
   if (!currentAoE4Civ) {
-    weightsDiv.innerHTML =
-      '<p class="placeholder-text">Generate an Age of Empires IV civilization to adjust weights.</p>';
-    weightsDiv.classList.add('weights-box-empty');
+    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
     return;
   }
 
-  // Remove the empty class
-  weightsDiv.classList.remove('weights-box-empty');
   let html = '<h3>Weights for ' + currentAoE4Civ.name + ':</h3>';
 
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
@@ -245,15 +237,7 @@ function finalizeAoE4ButtonHandler() {
 function resetAoE4State() {
   currentAoE4Civ = null;
   updateAoE4Buttons();
-  updateAoE4WeightInputs();
-
-  // Reset result box to empty state
-  const resultDiv = document.getElementById('aoe4Result');
-  if (resultDiv) {
-    resultDiv.innerHTML =
-      '<p class="placeholder-text">Generate an Age of Empires IV civilization to see the result here.</p>';
-    resultDiv.classList.add('result-box-empty');
-  }
+  updateAoE4WeightInputs(); // This will now clear the weights div
 }
 
 function displayAoE4Result(result, isFinalized = false) {
@@ -263,9 +247,6 @@ function displayAoE4Result(result, isFinalized = false) {
     console.error('aoe4Result div not found');
     return;
   }
-
-  // Remove the empty class
-  resultDiv.classList.remove('result-box-empty');
 
   const civName = result.civilization || result.name;
   const civSlug = AOE4_CIVILIZATIONS[civName];
@@ -303,13 +284,11 @@ function generateAbbasidAyyubidHTML() {
   const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
   wings.forEach((wing, index) => {
     html += `
-      <div class="weight-item-wrapper">
-        <div class="weight-item">
-          <span class="weight-label">${wing}</span>
-          <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
-            data-key="wings" data-index="${index}">
-          <span class="weight-value">${(currentAoE4Civ.weights.wings[index] * 100).toFixed(0)}%</span>
-        </div>
+      <div class="weight-item">
+        <span class="weight-label">${wing}</span>
+        <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
+          data-key="wings" data-index="${index}">
+        <span class="weight-value">${(currentAoE4Civ.weights.wings[index] * 100).toFixed(0)}%</span>
       </div>
     `;
   });
@@ -324,13 +303,11 @@ function generateStandardHTML() {
       html += `<div class="weight-group"><h4>Age ${age}</h4>`;
       options.forEach((option, index) => {
         html += `
-          <div class="weight-item-wrapper">
-            <div class="weight-item">
-              <span class="weight-label">${option}</span>
-              <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
-                data-key="${age}" data-index="${index}">
-              <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
-            </div>
+          <div class="weight-item">
+            <span class="weight-label">${option}</span>
+            <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
+              data-key="${age}" data-index="${index}">
+            <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
           </div>
         `;
       });
