@@ -4,49 +4,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AoE IV and AoM RNG</title>
+  <title>AoE Randomizer</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
   <div class="page-wrapper">
-    <aside class="history-panel">
+    <button id="hamburger-menu" class="hamburger-menu">☰</button>
+    <div class="history-panel" id="historyPanel">
       <h2>History</h2>
-      <div id="historyList" class="history-list"></div>
+      <div class="history-list" id="historyList"></div>
       <div class="export-buttons">
-        <button id="exportJSON">Export as JSON</button>
-        <button id="exportCSV">Export as CSV</button>
+        <button id="exportJSON">Export JSON</button>
+        <button id="exportCSV">Export CSV</button>
       </div>
-    </aside>
-    <main class="main-content">
-      <div id="historyPreview" class="history-preview"></div>
+    </div>
+    <div class="main-content">
+      <div class="history-preview" id="historyPreview"></div>
       <div class="game-columns">
-        <div class="game-box" id="aoe4Box">
+        <div class="game-box">
           <h2>Age of Empires IV</h2>
-          <div class="button-group">
-            <div class="button-container">
-              <button id="generateAoE4Btn">Generate AoE IV Civilization</button>
-              <button id="finalizeAoE4Btn" style="display:none;">Finalise AoE IV Selection</button>
-            </div>
-            <div id="aoe4AdditionalButtons" class="additional-buttons"></div>
+          <div id="aoe4Result"></div>
+          <div id="aoe4Weights"></div>
+          <div class="button-container">
+            <button id="generateAoE4Btn">Generate AoE IV Civ</button>
+            <button id="finalizeAoE4Btn" style="display: none;">Finalize Selection</button>
           </div>
-          <div id="aoe4Weights" class="weight-inputs"></div>
-          <div id="aoe4Result" class="result-container"></div>
+          <div id="aoe4AdditionalButtons" class="additional-buttons"></div>
         </div>
-        <div class="game-box" id="aomBox">
+        <div class="game-box">
           <h2>Age of Mythology</h2>
-          <div class="button-group">
-            <div class="button-container">
-              <button id="generateAoMBtn">Generate AoM Major God</button>
-              <button id="finalizeAoMBtn" style="display:none;">Finalise AoM Selection</button>
-            </div>
-            <div id="aomAdditionalButtons" class="additional-buttons"></div>
+          <div id="aomResult"></div>
+          <div id="aomWeights"></div>
+          <div class="button-container">
+            <button id="generateAoMBtn">Generate AoM Civ</button>
+            <button id="finalizeAoMBtn" style="display: none;">Finalize Selection</button>
           </div>
-          <div id="aomWeights" class="weight-inputs"></div>
-          <div id="aomResult" class="result-container"></div>
+          <div id="aomAdditionalButtons" class="additional-buttons"></div>
         </div>
       </div>
-    </main>
+    </div>
+  </div>
+  <div id="historyPopup" class="history-popup">
+    <div class="history-popup-content">
+      <span class="close-popup">&times;</span>
+      <div id="popupContent"></div>
+    </div>
   </div>
 
   <footer class="site-footer">
