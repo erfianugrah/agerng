@@ -67,14 +67,24 @@ function displayHistoryItem(index) {
   let html = '';
 
   if (item.game === 'AoE IV') {
-    html = `<h3>AoE IV: ${item.civilization}</h3>`;
+    html = `
+          <div class="selection-result">
+            <h3>AoE IV:</h3>
+            <h4>${item.civilization}</h4>
+          </div>`;
     html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
       html += `<li>Age ${age}: ${choice}</li>`;
     }
     html += '</ul>';
   } else if (item.game === 'AoM') {
-    html = `<h3>AoM: ${item.civilization} - ${item.majorGod}</h3>`;
+    html = `
+          <div class="selection-result">
+            <h3>AoM:</h3>
+            <h4>${item.civilization}</h4>
+            <h3>Major God:</h3>
+            <h4>${item.majorGod}</h4>
+          </div>`;
     html += '<ul>';
     for (const [age, god] of Object.entries(item.minorGods)) {
       html += `<li>${age} Age: ${god}</li>`;

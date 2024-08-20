@@ -14,8 +14,13 @@ function generateRandomAoMCiv() {
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
   updateAoMWeightInputs();
   updateAoMButtons();
-  document.getElementById('aomResult').innerHTML =
-    `<h3>Selected Civilization: ${currentAoMCiv.name} - ${currentAoMCiv.god}</h3>`;
+  document.getElementById('aomResult').innerHTML = `
+    <div class="selection-result">
+      <h3>Selected Civilization:</h3>
+      <h4>${currentAoMCiv.name}</h4>
+      <h3>Major God:</h3>
+      <h4>${currentAoMCiv.god}</h4>
+    </div>`;
   return currentAoMCiv;
 }
 
@@ -174,7 +179,13 @@ function resetAoMState() {
 
 function displayAoMResult(result, isFinalized = false) {
   const resultDiv = document.getElementById('aomResult');
-  let html = `<h3>AoM Result: ${result.civilization} - ${result.majorGod}</h3>`;
+  let html = `
+    <div class="selection-result">
+      <h3>Selected Civilization:</h3>
+      <h4>${result.civilization}</h4>
+      <h3>Major God:</h3>
+      <h4>${result.majorGod}</h4>
+    </div>`;
   html += '<ul>';
   for (const [age, god] of Object.entries(result.minorGods)) {
     html += `<li>${age} Age: ${god}</li>`;

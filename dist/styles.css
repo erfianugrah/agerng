@@ -413,3 +413,24 @@ body {
 		font-size: 0.8em;
 	}
 }
+
+.selection-result {
+	background-color: var(--primary-color);
+	color: white;
+	padding: 15px;
+	border-radius: var(--border-radius);
+	margin-bottom: 20px;
+	font-size: 1.2em;
+	text-align: center;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.selection-result h3 {
+	margin: 0;
+	color: white;
+}
+
+.selection-result h4 {
+	margin: 10px 0 0;
+	color: rgba(255, 255, 255, 0.9);
+}

@@ -23,8 +23,10 @@ function generateRandomAoE4Civ() {
   };
   updateAoE4WeightInputs();
   updateAoE4Buttons();
-  document.getElementById('aoe4Result').innerHTML =
-    `<h3>Selected Civilization: ${currentAoE4Civ.name}</h3>`;
+  document.getElementById('aoe4Result').innerHTML = `<div class="selection-result">
+       <h3>Selected Civilization:</h3>
+       <h4>${currentAoE4Civ.name}</h4>
+     </div>`;
   return currentAoE4Civ;
 }
 
@@ -253,7 +255,11 @@ function displayAoE4Result(result, isFinalized = false) {
     console.error('aoe4Result div not found');
     return;
   }
-  let html = `<h3>Result: ${result.civilization}</h3>`;
+  let html = `
+    <div class="selection-result">
+      <h3>Selected Civilization:</h3>
+      <h4>${result.civilization}</h4>
+    </div>`;
   html += '<ul>';
   for (const [age, choice] of Object.entries(result.ageUps)) {
     html += `<li>Age ${age}: ${choice}</li>`;
