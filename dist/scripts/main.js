@@ -41,15 +41,37 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function handleGenerateAoE4() {
+  console.log('handleGenerateAoE4 called');
   const result = generateRandomAoE4Civ();
-  displayAoE4Result(result);
+  console.log('AoE4 result:', result);
+  document.getElementById('aoe4Result').innerHTML = `
+    <div class="selection-result">
+      <h3>Selected Civilization:</h3>
+      <h4>${result.name}</h4>
+    </div>
+  `;
+  document.getElementById('generateAoE4Btn').style.display = 'none';
+  document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
+  console.log('handleGenerateAoE4 completed');
 }
 
 function handleGenerateAoM() {
+  console.log('handleGenerateAoM called');
   const result = generateRandomAoMCiv();
-  displayAoMResult(result);
+  console.log('AoM result:', result);
+  document.getElementById('aomResult').innerHTML = `
+    <div class="selection-result">
+      <h3>Selected Civilization:</h3>
+      <h4>${result.name}</h4>
+      <h3>Major God:</h3>
+      <h4>${result.god}</h4>
+    </div>
+  `;
+  document.getElementById('generateAoMBtn').style.display = 'none';
+  document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
+  console.log('handleGenerateAoM completed');
 }
 
 function handleFinalizeAoE4() {

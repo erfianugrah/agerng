@@ -14,11 +14,13 @@ function saveHistory() {
 }
 
 function addToHistory(result) {
+  console.log('Adding to history:', result);
   history.unshift(result);
   if (history.length > 100) {
     history.pop();
   }
   saveHistory();
+  console.log('Current history length:', history.length);
 }
 
 function updateHistoryDisplay() {

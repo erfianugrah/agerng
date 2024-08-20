@@ -9,9 +9,11 @@ function initializeAoMWeights(civ, god) {
 }
 
 function generateRandomAoMCiv() {
+  console.log('Generating random AoM civilization');
   const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
   const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
+  console.log('Generated AoM civilization:', currentAoMCiv);
   updateAoMWeightInputs();
   updateAoMButtons();
   return currentAoMCiv;
@@ -128,19 +130,29 @@ function rerollAoMGods() {
 }
 
 function finalizeAoMSelection(addToHistory = true) {
-  if (!currentAoMCiv) return null;
+  console.log('Finalizing AoM selection');
+  if (!currentAoMCiv) {
+    console.error('No current AoM civilization selected');
+    return null;
+  }
+
   const minorGods = {};
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
     const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
     minorGods[age] = weightedRandomChoice(options, currentAoMCiv.weights[age]);
   }
+
   const result = {
     game: 'AoM',
     civilization: currentAoMCiv.name,
     majorGod: currentAoMCiv.god,
     minorGods,
   };
+
+  console.log('AoM finalized result:', result);
+
   if (addToHistory) {
+    console.log('Adding AoM result to history');
     try {
       if (typeof globalThis.addToHistory === 'function') {
         globalThis.addToHistory(result);
@@ -171,19 +183,28 @@ function resetAoMState() {
 }
 
 function displayAoMResult(result, isFinalized = false) {
+  console.log('Displaying AoM result', result);
   const resultDiv = document.getElementById('aomResult');
+  if (!resultDiv) {
+    console.error('aomResult div not found');
+    return;
+  }
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>
-      <h4>${result.civilization}</h4>
+      <h4>${result.civilization || result.name}</h4>
       <h3>Major God:</h3>
-      <h4>${result.majorGod}</h4>
+      <h4>${result.majorGod || result.god}</h4>
     </div>`;
-  html += '<ul>';
-  for (const [age, god] of Object.entries(result.minorGods)) {
-    html += `<li>${age} Age: ${god}</li>`;
+
+  if (result.minorGods) {
+    html += '<ul>';
+    for (const [age, god] of Object.entries(result.minorGods)) {
+      html += `<li>${age} Age: ${god}</li>`;
+    }
+    html += '</ul>';
   }
-  html += '</ul>';
+
   if (isFinalized) {
     html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
