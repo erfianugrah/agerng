@@ -247,18 +247,32 @@ function displayAoE4Result(result, isFinalized = false) {
     console.error('aoe4Result div not found');
     return;
   }
+
+  const civName = result.civilization || result.name;
+  const civSlug = AOE4_CIVILIZATIONS[civName];
+
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>
-      <h4>${result.civilization || result.name}</h4>
+      <h4><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${civName}</a></h4>
     </div>`;
+
   if (result.ageUps) {
     html += '<ul>';
     for (const [age, choice] of Object.entries(result.ageUps)) {
-      html += `<li>Age ${age}: ${choice}</li>`;
+      let linkUrl;
+      if (civName === 'Abbasid Dynasty' || civName === 'Ayyubids') {
+        const wingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
+      } else {
+        const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
+      }
+      html += `<li>Age ${age}: <a href="${linkUrl}" target="_blank">${choice}</a></li>`;
     }
     html += '</ul>';
   }
+
   if (isFinalized) {
     html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
