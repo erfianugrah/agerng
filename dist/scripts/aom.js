@@ -63,11 +63,13 @@ function updateAoMWeightInputs() {
     html += `<div class="weight-group"><h4>${age} Age</h4>`;
     options.forEach((option, index) => {
       html += `
-        <div class="weight-item">
-          <span class="weight-label">${option}</span>
-          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
-            data-key="${age}" data-index="${index}">
-          <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
+        <div class="weight-item-wrapper">
+          <div class="weight-item">
+            <span class="weight-label">${option}</span>
+            <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
+              data-key="${age}" data-index="${index}">
+            <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
+          </div>
         </div>
       `;
     });

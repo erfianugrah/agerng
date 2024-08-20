@@ -299,11 +299,13 @@ function generateAbbasidAyyubidHTML() {
   const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
   wings.forEach((wing, index) => {
     html += `
-      <div class="weight-item">
-        <span class="weight-label">${wing}</span>
-        <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
-          data-key="wings" data-index="${index}">
-        <span class="weight-value">${(currentAoE4Civ.weights.wings[index] * 100).toFixed(0)}%</span>
+      <div class="weight-item-wrapper">
+        <div class="weight-item">
+          <span class="weight-label">${wing}</span>
+          <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights.wings[index]}"
+            data-key="wings" data-index="${index}">
+          <span class="weight-value">${(currentAoE4Civ.weights.wings[index] * 100).toFixed(0)}%</span>
+        </div>
       </div>
     `;
   });
@@ -318,11 +320,13 @@ function generateStandardHTML() {
       html += `<div class="weight-group"><h4>Age ${age}</h4>`;
       options.forEach((option, index) => {
         html += `
-          <div class="weight-item">
-            <span class="weight-label">${option}</span>
-            <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
-              data-key="${age}" data-index="${index}">
-            <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
+          <div class="weight-item-wrapper">
+            <div class="weight-item">
+              <span class="weight-label">${option}</span>
+              <input type="range" class="weight-slider aoe4-slider" min="0" max="1" step="0.01" value="${currentAoE4Civ.weights[age][index]}"
+                data-key="${age}" data-index="${index}">
+              <span class="weight-value">${(currentAoE4Civ.weights[age][index] * 100).toFixed(0)}%</span>
+            </div>
           </div>
         `;
       });
