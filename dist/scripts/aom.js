@@ -192,23 +192,20 @@ function displayAoMResult(result, isFinalized = false) {
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>
-      <h4>${result.civilization || result.name}</h4>
+      <h4>${result.civilization}</h4>
       <h3>Major God:</h3>
-      <h4>${result.majorGod || result.god}</h4>
+      <h4>${result.majorGod}</h4>
     </div>`;
-
-  if (result.minorGods) {
-    html += '<ul>';
-    for (const [age, god] of Object.entries(result.minorGods)) {
-      html += `<li>${age} Age: ${god}</li>`;
-    }
-    html += '</ul>';
+  html += '<ul>';
+  for (const [age, god] of Object.entries(result.minorGods)) {
+    html += `<li>${age} Age: ${god}</li>`;
   }
-
+  html += '</ul>';
   if (isFinalized) {
     html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
   resultDiv.innerHTML = html;
+  // Remove the addToHistory call from here
 }
 
 // Make functions globally available
