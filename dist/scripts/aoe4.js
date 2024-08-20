@@ -179,18 +179,7 @@ function finalizeAoE4Selection(addToHistory = true) {
   const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
   console.log('AoE4 finalized result:', result);
 
-  if (addToHistory) {
-    console.log('Adding AoE4 result to history');
-    try {
-      if (typeof globalThis.addToHistory === 'function') {
-        globalThis.addToHistory(result);
-      } else {
-        console.warn('addToHistory is not a function. History will not be updated.');
-      }
-    } catch (error) {
-      console.error('Error while adding to history:', error);
-    }
-  }
+  // Remove the addToHistory call from here
   return result;
 }
 

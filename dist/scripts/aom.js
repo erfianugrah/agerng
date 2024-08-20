@@ -151,18 +151,7 @@ function finalizeAoMSelection(addToHistory = true) {
 
   console.log('AoM finalized result:', result);
 
-  if (addToHistory) {
-    console.log('Adding AoM result to history');
-    try {
-      if (typeof globalThis.addToHistory === 'function') {
-        globalThis.addToHistory(result);
-      } else {
-        console.warn('addToHistory is not a function. History will not be updated.');
-      }
-    } catch (error) {
-      console.error('Error while adding to history:', error);
-    }
-  }
+  // Remove the addToHistory call from here
   return result;
 }
 

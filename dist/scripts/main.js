@@ -64,10 +64,10 @@ function handleGenerateAoM() {
 
 function handleFinalizeAoE4() {
   console.log('handleFinalizeAoE4 called');
-  const result = finalizeAoE4Selection(true);
+  const result = finalizeAoE4Selection(false); // Set addToHistory to false
   if (result) {
     displayAoE4Result(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoE4State();
   } else {
     console.error('Failed to finalize AoE4 selection');
@@ -77,10 +77,10 @@ function handleFinalizeAoE4() {
 
 function handleFinalizeAoM() {
   console.log('handleFinalizeAoM called');
-  const result = finalizeAoMSelection(true);
+  const result = finalizeAoMSelection(false); // Set addToHistory to false
   if (result) {
     displayAoMResult(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoMState();
   } else {
     console.error('Failed to finalize AoM selection');
