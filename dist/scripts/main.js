@@ -30,11 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('generateAoE4Btn').addEventListener('click', () => {
     const result = generateRandomAoE4Civ();
     document.getElementById('aoe4Result').innerHTML = `
-            <div class="selection-result">
-                <h3>Selected Civilization:</h3>
-                <h4>${result.name}</h4>
-            </div>
-        `;
+      <div class="selection-result">
+        <h3>Selected Civilization:</h3>
+        <h4>${result.name}</h4>
+      </div>
+    `;
     document.getElementById('generateAoE4Btn').style.display = 'none';
     document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
@@ -43,28 +43,38 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('generateAoMBtn').addEventListener('click', () => {
     const result = generateRandomAoMCiv();
     document.getElementById('aomResult').innerHTML = `
-            <div class="selection-result">
-                <h3>Selected Civilization:</h3>
-                <h4>${result.name}</h4>
-                <h3>Major God:</h3>
-                <h4>${result.god}</h4>
-            </div>
-        `;
+      <div class="selection-result">
+        <h3>Selected Civilization:</h3>
+        <h4>${result.name}</h4>
+        <h3>Major God:</h3>
+        <h4>${result.god}</h4>
+      </div>
+    `;
     document.getElementById('generateAoMBtn').style.display = 'none';
     document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
   });
 
   document.getElementById('finalizeAoE4Btn').addEventListener('click', () => {
-    finalizeAoE4Selection();
-    document.getElementById('finalizeAoE4Btn').style.display = 'none';
-    document.getElementById('generateAoE4Btn').style.display = 'inline-block';
+    const result = finalizeAoE4Selection();
+    if (result) {
+      displayAoE4Result(result, true);
+      addToHistory(result);
+      resetAoE4State();
+    } else {
+      console.error('Failed to finalize AoE4 selection');
+    }
   });
 
   document.getElementById('finalizeAoMBtn').addEventListener('click', () => {
-    finalizeAoMSelection();
-    document.getElementById('finalizeAoMBtn').style.display = 'none';
-    document.getElementById('generateAoMBtn').style.display = 'inline-block';
+    const result = finalizeAoMSelection();
+    if (result) {
+      displayAoMResult(result, true);
+      addToHistory(result);
+      resetAoMState();
+    } else {
+      console.error('Failed to finalize AoM selection');
+    }
   });
 
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
@@ -78,11 +88,11 @@ function displayHistoryItem(index) {
 
   if (item.game === 'AoE IV') {
     html = `
-            <div class="selection-result">
-                <h3>AoE IV:</h3>
-                <h4>${item.civilization}</h4>
-            </div>
-        `;
+      <div class="selection-result">
+        <h3>AoE IV:</h3>
+        <h4>${item.civilization}</h4>
+      </div>
+    `;
     html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
       html += `<li>Age ${age}: ${choice}</li>`;
@@ -90,13 +100,13 @@ function displayHistoryItem(index) {
     html += '</ul>';
   } else if (item.game === 'AoM') {
     html = `
-            <div class="selection-result">
-                <h3>AoM:</h3>
-                <h4>${item.civilization}</h4>
-                <h3>Major God:</h3>
-                <h4>${item.majorGod}</h4>
-            </div>
-        `;
+      <div class="selection-result">
+        <h3>AoM:</h3>
+        <h4>${item.civilization}</h4>
+        <h3>Major God:</h3>
+        <h4>${item.majorGod}</h4>
+      </div>
+    `;
     html += '<ul>';
     for (const [age, god] of Object.entries(item.minorGods)) {
       html += `<li>${age} Age: ${god}</li>`;
@@ -107,3 +117,20 @@ function displayHistoryItem(index) {
   popupContent.innerHTML = html;
   document.getElementById('historyPopup').style.display = 'block';
 }
+
+// These functions should be defined in their respective files (aoe4.js and aom.js)
+// but are called from main.js. Ensure they are available globally.
+// function generateRandomAoE4Civ() { ... }
+// function generateRandomAoMCiv() { ... }
+// function finalizeAoE4Selection() { ... }
+// function finalizeAoMSelection() { ... }
+// function displayAoE4Result() { ... }
+// function displayAoMResult() { ... }
+// function resetAoE4State() { ... }
+// function resetAoMState() { ... }
+
+// Assume these functions are defined in utils.js
+// function loadHistory() { ... }
+// function addToHistory(result) { ... }
+// function exportJSON() { ... }
+// function exportCSV() { ... }

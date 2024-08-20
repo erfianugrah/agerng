@@ -308,7 +308,6 @@ function generateStandardHTML() {
 // Initial setup
 document.addEventListener('DOMContentLoaded', () => {
   updateAoE4Buttons();
-  document.getElementById('generateAoE4Btn').addEventListener('click', generateRandomAoE4Civ);
 });
 
 // Assume weightedRandomChoice function is defined elsewhere

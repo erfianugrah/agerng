@@ -193,7 +193,6 @@ function displayAoMResult(result, isFinalized = false) {
 // Initial setup
 document.addEventListener('DOMContentLoaded', () => {
   updateAoMButtons();
-  document.getElementById('generateAoMBtn').addEventListener('click', generateRandomAoMCiv);
 });
 
 // Assume weightedRandomChoice function is defined elsewhere
