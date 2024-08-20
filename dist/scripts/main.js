@@ -1,22 +1,6 @@
-import { loadHistory, addToHistory, exportJSON, exportCSV } from './utils.js';
-import {
-  generateRandomAoE4Civ,
-  finalizeAoE4Selection,
-  displayAoE4Result,
-  resetAoE4State,
-  updateAoE4Buttons,
-} from './aoe4.js';
-import {
-  generateRandomAoMCiv,
-  finalizeAoMSelection,
-  displayAoMResult,
-  resetAoMState,
-  updateAoMButtons,
-} from './aom.js';
+document.addEventListener('DOMContentLoaded', () => {
+  loadHistory();
 
-let history = [];
-
-function initializeEventListeners() {
   const hamburgerMenu = document.getElementById('hamburger-menu');
   const historyPanel = document.getElementById('historyPanel');
   const historyPopup = document.getElementById('historyPopup');
@@ -26,6 +10,7 @@ function initializeEventListeners() {
     historyPanel.classList.toggle('active');
   });
 
+  // Close history panel when clicking outside of it
   document.addEventListener('click', (event) => {
     if (!historyPanel.contains(event.target) && !hamburgerMenu.contains(event.target)) {
       historyPanel.classList.remove('active');
@@ -42,72 +27,59 @@ function initializeEventListeners() {
     }
   });
 
-  document.getElementById('generateAoE4Btn').addEventListener('click', handleGenerateAoE4);
-  document.getElementById('generateAoMBtn').addEventListener('click', handleGenerateAoM);
-  document.getElementById('finalizeAoE4Btn').addEventListener('click', handleFinalizeAoE4);
-  document.getElementById('finalizeAoMBtn').addEventListener('click', handleFinalizeAoM);
+  document.getElementById('generateAoE4Btn').addEventListener('click', () => {
+    const result = generateRandomAoE4Civ();
+    document.getElementById('aoe4Result').innerHTML = `
+      <div class="selection-result">
+        <h3>Selected Civilization:</h3>
+        <h4>${result.name}</h4>
+      </div>
+    `;
+    document.getElementById('generateAoE4Btn').style.display = 'none';
+    document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
+    document.getElementById('historyPreview').style.display = 'none';
+  });
+
+  document.getElementById('generateAoMBtn').addEventListener('click', () => {
+    const result = generateRandomAoMCiv();
+    document.getElementById('aomResult').innerHTML = `
+      <div class="selection-result">
+        <h3>Selected Civilization:</h3>
+        <h4>${result.name}</h4>
+        <h3>Major God:</h3>
+        <h4>${result.god}</h4>
+      </div>
+    `;
+    document.getElementById('generateAoMBtn').style.display = 'none';
+    document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
+    document.getElementById('historyPreview').style.display = 'none';
+  });
+
+  document.getElementById('finalizeAoE4Btn').addEventListener('click', () => {
+    const result = finalizeAoE4Selection();
+    if (result) {
+      displayAoE4Result(result, true);
+      addToHistory(result);
+      resetAoE4State();
+    } else {
+      console.error('Failed to finalize AoE4 selection');
+    }
+  });
+
+  document.getElementById('finalizeAoMBtn').addEventListener('click', () => {
+    const result = finalizeAoMSelection();
+    if (result) {
+      displayAoMResult(result, true);
+      addToHistory(result);
+      resetAoMState();
+    } else {
+      console.error('Failed to finalize AoM selection');
+    }
+  });
+
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
-}
-
-function handleGenerateAoE4() {
-  const result = generateRandomAoE4Civ();
-  document.getElementById('aoe4Result').innerHTML = `
-    <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${result.name}</h4>
-    </div>
-  `;
-  updateAoE4Buttons();
-  document.getElementById('historyPreview').style.display = 'none';
-}
-
-function handleGenerateAoM() {
-  const result = generateRandomAoMCiv();
-  document.getElementById('aomResult').innerHTML = `
-    <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${result.name}</h4>
-      <h3>Major God:</h3>
-      <h4>${result.god}</h4>
-    </div>
-  `;
-  updateAoMButtons();
-  document.getElementById('historyPreview').style.display = 'none';
-}
-
-function handleFinalizeAoE4() {
-  const result = finalizeAoE4Selection();
-  if (result) {
-    displayAoE4Result(result, true);
-    addToHistory(result);
-    resetAoE4State();
-  } else {
-    console.error('Failed to finalize AoE4 selection');
-  }
-}
-
-function handleFinalizeAoM() {
-  const result = finalizeAoMSelection();
-  if (result) {
-    displayAoMResult(result, true);
-    addToHistory(result);
-    resetAoMState();
-  } else {
-    console.error('Failed to finalize AoM selection');
-  }
-}
-
-function updateHistoryDisplay() {
-  const historyList = document.getElementById('historyList');
-  historyList.innerHTML = '';
-  history.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.textContent = `${item.game}: ${item.civilization}${item.majorGod ? ' - ' + item.majorGod : ''}`;
-    li.addEventListener('click', () => displayHistoryItem(index));
-    historyList.appendChild(li);
-  });
-}
+});
 
 function displayHistoryItem(index) {
   const item = history[index];
@@ -146,17 +118,19 @@ function displayHistoryItem(index) {
   document.getElementById('historyPopup').style.display = 'block';
 }
 
-function init() {
-  history = loadHistory();
-  initializeEventListeners();
-  updateHistoryDisplay();
-  updateAoE4Buttons();
-  updateAoMButtons();
-}
+// These functions should be defined in their respective files (aoe4.js and aom.js)
+// but are called from main.js. Ensure they are available globally.
+// function generateRandomAoE4Civ() { ... }
+// function generateRandomAoMCiv() { ... }
+// function finalizeAoE4Selection() { ... }
+// function finalizeAoMSelection() { ... }
+// function displayAoE4Result() { ... }
+// function displayAoMResult() { ... }
+// function resetAoE4State() { ... }
+// function resetAoMState() { ... }
 
-// Wait for the DOM to be fully loaded before initializing
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+// Assume these functions are defined in utils.js
+// function loadHistory() { ... }
+// function addToHistory(result) { ... }
+// function exportJSON() { ... }
+// function exportCSV() { ... }

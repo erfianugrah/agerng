@@ -1,6 +1,6 @@
 let history = [];
 
-export function loadHistory() {
+function loadHistory() {
   const savedHistory = localStorage.getItem('aoeRngHistory');
   if (savedHistory) {
     history = JSON.parse(savedHistory);
@@ -8,12 +8,12 @@ export function loadHistory() {
   }
 }
 
-export function saveHistory() {
+function saveHistory() {
   localStorage.setItem('aoeRngHistory', JSON.stringify(history));
   updateHistoryDisplay();
 }
 
-export function addToHistory(result) {
+function addToHistory(result) {
   history.unshift(result);
   if (history.length > 100) {
     history.pop();
@@ -21,7 +21,7 @@ export function addToHistory(result) {
   saveHistory();
 }
 
-export function updateHistoryDisplay() {
+function updateHistoryDisplay() {
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
   history.forEach((item, index) => {
@@ -32,7 +32,32 @@ export function updateHistoryDisplay() {
   });
 }
 
-export function exportJSON() {
+function displayHistoryItem(index) {
+  const item = history[index];
+  const previewDiv = document.getElementById('historyPreview');
+  let html = '';
+
+  if (item.game === 'AoE IV') {
+    html = `<h3>AoE IV: ${item.civilization}</h3>`;
+    html += '<ul>';
+    for (const [age, choice] of Object.entries(item.ageUps)) {
+      html += `<li>Age ${age}: ${choice}</li>`;
+    }
+    html += '</ul>';
+  } else if (item.game === 'AoM') {
+    html = `<h3>AoM: ${item.civilization} - ${item.majorGod}</h3>`;
+    html += '<ul>';
+    for (const [age, god] of Object.entries(item.minorGods)) {
+      html += `<li>${age} Age: ${god}</li>`;
+    }
+    html += '</ul>';
+  }
+
+  previewDiv.innerHTML = html;
+  previewDiv.style.display = 'block';
+}
+
+function exportJSON() {
   const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(history));
   const downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute('href', dataStr);
@@ -42,7 +67,7 @@ export function exportJSON() {
   downloadAnchorNode.remove();
 }
 
-export function exportCSV() {
+function exportCSV() {
   let csvContent = 'data:text/csv;charset=utf-8,';
   csvContent += 'Game,Civilization,Major God,Minor Gods\n';
   history.forEach((item) => {
@@ -67,7 +92,7 @@ export function exportCSV() {
   link.remove();
 }
 
-export function weightedRandomChoice(options, weights) {
+function weightedRandomChoice(options, weights) {
   const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
   let random = Math.random() * totalWeight;
   for (let i = 0; i < options.length; i++) {

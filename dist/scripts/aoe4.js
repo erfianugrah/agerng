@@ -1,11 +1,3 @@
-import { weightedRandomChoice } from './utils.js';
-import {
-  aoe4Civilizations,
-  aoe4AgeUpOptions,
-  AOE4_CIVILIZATIONS,
-  aoe4AyyubidBonuses,
-} from './civgods.js';
-
 let currentAoE4Civ = null;
 
 function initializeAoE4Weights(civ) {
@@ -22,7 +14,7 @@ function initializeAoE4Weights(civ) {
   }
 }
 
-export function generateRandomAoE4Civ() {
+function generateRandomAoE4Civ() {
   console.log('Generating random AoE4 civilization');
   const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
   currentAoE4Civ = {
@@ -119,7 +111,7 @@ function handleAoE4SliderInput(event) {
   updateAoE4Weight(key, index, value);
 }
 
-export function updateAoE4Buttons() {
+function updateAoE4Buttons() {
   const additionalButtonsDiv = document.getElementById('aoe4AdditionalButtons');
   const generateBtn = document.getElementById('generateAoE4Btn');
   const finalizeBtn = document.getElementById('finalizeAoE4Btn');
@@ -147,6 +139,12 @@ export function updateAoE4Buttons() {
     additionalButtonsDiv.innerHTML = '';
   }
 
+  // Remove existing event listeners before adding new ones
+  finalizeBtn.removeEventListener('click', finalizeAoE4ButtonHandler);
+  if (currentAoE4Civ) {
+    finalizeBtn.addEventListener('click', finalizeAoE4ButtonHandler);
+  }
+
   // Show/hide buttons as needed
   generateBtn.style.display = currentAoE4Civ ? 'none' : 'inline-block';
   finalizeBtn.style.display = currentAoE4Civ ? 'inline-block' : 'none';
@@ -164,7 +162,7 @@ function rerollAoE4Landmarks() {
   displayAoE4Result(result);
 }
 
-export function finalizeAoE4Selection(addToHistory = true) {
+function finalizeAoE4Selection(addToHistory = true) {
   console.log('Finalizing AoE4 selection');
   if (!currentAoE4Civ) {
     console.error('No current AoE4 civilization selected');
@@ -178,7 +176,15 @@ export function finalizeAoE4Selection(addToHistory = true) {
     ageUps = finalizeStandardSelection();
   }
 
-  return { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
+  const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
+  if (addToHistory) {
+    try {
+      window.addToHistory(result);
+    } catch (error) {
+      console.error('Error while adding to history:', error);
+    }
+  }
+  return result;
 }
 
 function finalizeAbbasidAyyubidSelection() {
@@ -222,13 +228,23 @@ function finalizeStandardSelection() {
   return ageUps;
 }
 
-export function resetAoE4State() {
+function finalizeAoE4ButtonHandler() {
+  const result = finalizeAoE4Selection(true);
+  if (result) {
+    displayAoE4Result(result, true);
+    resetAoE4State();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
+function resetAoE4State() {
   currentAoE4Civ = null;
   updateAoE4Buttons();
   updateAoE4WeightInputs(); // This will now clear the weights div
 }
 
-export function displayAoE4Result(result, isFinalized = false) {
+function displayAoE4Result(result, isFinalized = false) {
   console.log('Displaying AoE4 result', result);
   const resultDiv = document.getElementById('aoe4Result');
   if (!resultDiv) {
@@ -288,3 +304,14 @@ function generateStandardHTML() {
   }
   return html;
 }
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+  updateAoE4Buttons();
+});
+
+// Assume weightedRandomChoice function is defined elsewhere
+// function weightedRandomChoice(options, weights) { ... }
+
+// Assume addToHistory function is defined elsewhere
+// function addToHistory(result) { ... }
