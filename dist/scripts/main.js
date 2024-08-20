@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     historyPanel.classList.toggle('active');
   });
 
+  // Close history panel when clicking outside of it
+  document.addEventListener('click', (event) => {
+    if (!historyPanel.contains(event.target) && !hamburgerMenu.contains(event.target)) {
+      historyPanel.classList.remove('active');
+    }
+  });
+
   closePopup.addEventListener('click', () => {
     historyPopup.style.display = 'none';
   });
