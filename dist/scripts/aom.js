@@ -142,8 +142,8 @@ function finalizeAoMSelection(addToHistory = true) {
   };
   if (addToHistory) {
     try {
-      if (typeof window.addToHistory === 'function') {
-        window.addToHistory(result);
+      if (typeof globalThis.addToHistory === 'function') {
+        globalThis.addToHistory(result);
       } else {
         console.warn('addToHistory is not a function. History will not be updated.');
       }
@@ -190,13 +190,12 @@ function displayAoMResult(result, isFinalized = false) {
   resultDiv.innerHTML = html;
 }
 
-// Initial setup
-document.addEventListener('DOMContentLoaded', () => {
-  updateAoMButtons();
-});
+// Make functions globally available
+globalThis.generateRandomAoMCiv = generateRandomAoMCiv;
+globalThis.finalizeAoMSelection = finalizeAoMSelection;
+globalThis.displayAoMResult = displayAoMResult;
+globalThis.resetAoMState = resetAoMState;
+globalThis.updateAoMButtons = updateAoMButtons;
 
 // Assume weightedRandomChoice function is defined elsewhere
 // function weightedRandomChoice(options, weights) { ... }
-
-// Assume addToHistory function is defined elsewhere
-// function addToHistory(result) { ... }

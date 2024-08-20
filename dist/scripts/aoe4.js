@@ -179,7 +179,11 @@ function finalizeAoE4Selection(addToHistory = true) {
   const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
   if (addToHistory) {
     try {
-      window.addToHistory(result);
+      if (typeof globalThis.addToHistory === 'function') {
+        globalThis.addToHistory(result);
+      } else {
+        console.warn('addToHistory is not a function. History will not be updated.');
+      }
     } catch (error) {
       console.error('Error while adding to history:', error);
     }
@@ -305,13 +309,12 @@ function generateStandardHTML() {
   return html;
 }
 
-// Initial setup
-document.addEventListener('DOMContentLoaded', () => {
-  updateAoE4Buttons();
-});
+// Make functions globally available
+globalThis.generateRandomAoE4Civ = generateRandomAoE4Civ;
+globalThis.finalizeAoE4Selection = finalizeAoE4Selection;
+globalThis.displayAoE4Result = displayAoE4Result;
+globalThis.resetAoE4State = resetAoE4State;
+globalThis.updateAoE4Buttons = updateAoE4Buttons;
 
 // Assume weightedRandomChoice function is defined elsewhere
 // function weightedRandomChoice(options, weights) { ... }
-
-// Assume addToHistory function is defined elsewhere
-// function addToHistory(result) { ... }

@@ -21,65 +21,58 @@ document.addEventListener('DOMContentLoaded', () => {
     historyPopup.style.display = 'none';
   });
 
-  window.addEventListener('click', (event) => {
+  globalThis.addEventListener('click', (event) => {
     if (event.target === historyPopup) {
       historyPopup.style.display = 'none';
     }
   });
 
-  document.getElementById('generateAoE4Btn').addEventListener('click', () => {
-    const result = generateRandomAoE4Civ();
-    document.getElementById('aoe4Result').innerHTML = `
-      <div class="selection-result">
-        <h3>Selected Civilization:</h3>
-        <h4>${result.name}</h4>
-      </div>
-    `;
-    document.getElementById('generateAoE4Btn').style.display = 'none';
-    document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
-    document.getElementById('historyPreview').style.display = 'none';
-  });
-
-  document.getElementById('generateAoMBtn').addEventListener('click', () => {
-    const result = generateRandomAoMCiv();
-    document.getElementById('aomResult').innerHTML = `
-      <div class="selection-result">
-        <h3>Selected Civilization:</h3>
-        <h4>${result.name}</h4>
-        <h3>Major God:</h3>
-        <h4>${result.god}</h4>
-      </div>
-    `;
-    document.getElementById('generateAoMBtn').style.display = 'none';
-    document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
-    document.getElementById('historyPreview').style.display = 'none';
-  });
-
-  document.getElementById('finalizeAoE4Btn').addEventListener('click', () => {
-    const result = finalizeAoE4Selection();
-    if (result) {
-      displayAoE4Result(result, true);
-      addToHistory(result);
-      resetAoE4State();
-    } else {
-      console.error('Failed to finalize AoE4 selection');
-    }
-  });
-
-  document.getElementById('finalizeAoMBtn').addEventListener('click', () => {
-    const result = finalizeAoMSelection();
-    if (result) {
-      displayAoMResult(result, true);
-      addToHistory(result);
-      resetAoMState();
-    } else {
-      console.error('Failed to finalize AoM selection');
-    }
-  });
+  document.getElementById('generateAoE4Btn').addEventListener('click', handleGenerateAoE4);
+  document.getElementById('generateAoMBtn').addEventListener('click', handleGenerateAoM);
+  document.getElementById('finalizeAoE4Btn').addEventListener('click', handleFinalizeAoE4);
+  document.getElementById('finalizeAoMBtn').addEventListener('click', handleFinalizeAoM);
 
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
+
+  // Initial setup
+  updateAoE4Buttons();
+  updateAoMButtons();
 });
+
+function handleGenerateAoE4() {
+  const result = generateRandomAoE4Civ();
+  displayAoE4Result(result);
+  document.getElementById('historyPreview').style.display = 'none';
+}
+
+function handleGenerateAoM() {
+  const result = generateRandomAoMCiv();
+  displayAoMResult(result);
+  document.getElementById('historyPreview').style.display = 'none';
+}
+
+function handleFinalizeAoE4() {
+  const result = finalizeAoE4Selection(true);
+  if (result) {
+    displayAoE4Result(result, true);
+    addToHistory(result);
+    resetAoE4State();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
+function handleFinalizeAoM() {
+  const result = finalizeAoMSelection(true);
+  if (result) {
+    displayAoMResult(result, true);
+    addToHistory(result);
+    resetAoMState();
+  } else {
+    console.error('Failed to finalize AoM selection');
+  }
+}
 
 function displayHistoryItem(index) {
   const item = history[index];
@@ -118,19 +111,6 @@ function displayHistoryItem(index) {
   document.getElementById('historyPopup').style.display = 'block';
 }
 
-// These functions should be defined in their respective files (aoe4.js and aom.js)
-// but are called from main.js. Ensure they are available globally.
-// function generateRandomAoE4Civ() { ... }
-// function generateRandomAoMCiv() { ... }
-// function finalizeAoE4Selection() { ... }
-// function finalizeAoMSelection() { ... }
-// function displayAoE4Result() { ... }
-// function displayAoMResult() { ... }
-// function resetAoE4State() { ... }
-// function resetAoMState() { ... }
-
-// Assume these functions are defined in utils.js
-// function loadHistory() { ... }
-// function addToHistory(result) { ... }
-// function exportJSON() { ... }
-// function exportCSV() { ... }
+// Ensure these functions are globally available
+globalThis.addToHistory = addToHistory;
+globalThis.displayHistoryItem = displayHistoryItem;
