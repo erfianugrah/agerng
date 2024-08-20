@@ -158,11 +158,26 @@ function rerollAoE4Landmarks() {
     return;
   }
 
-  const result = finalizeAoE4Selection(false);
-  displayAoE4Result(result);
+  const result = finalizeAoE4Selection();
+  displayAoE4Result(result, false); // Don't mark as finalized for re-rolls
 }
 
-function finalizeAoE4Selection(addToHistory = true) {
+function finalizeAoE4ButtonHandler() {
+  if (!currentAoE4Civ) {
+    console.error('No current AoE4 civilization selected');
+    return;
+  }
+
+  const result = finalizeAoE4Selection();
+  if (result) {
+    displayAoE4Result(result, true);
+    resetAoE4State();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
+function finalizeAoE4Selection() {
   console.log('Finalizing AoE4 selection');
   if (!currentAoE4Civ) {
     console.error('No current AoE4 civilization selected');
@@ -176,14 +191,16 @@ function finalizeAoE4Selection(addToHistory = true) {
     ageUps = finalizeStandardSelection();
   }
 
-  const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
-  if (addToHistory) {
-    try {
-      window.addToHistory(result);
-    } catch (error) {
-      console.error('Error while adding to history:', error);
-    }
-  }
+  const result = {
+    game: 'AoE IV',
+    civilization: currentAoE4Civ.name,
+    ageUps,
+    civLink: `https://aoe4world.com/civilizations/${currentAoE4Civ.name.toLowerCase().replace(/ /g, '-')}`,
+  };
+
+  // Add to history here, only once
+  window.addToHistory(result);
+
   return result;
 }
 
@@ -228,16 +245,6 @@ function finalizeStandardSelection() {
   return ageUps;
 }
 
-function finalizeAoE4ButtonHandler() {
-  const result = finalizeAoE4Selection(true);
-  if (result) {
-    displayAoE4Result(result, true);
-    resetAoE4State();
-  } else {
-    console.error('Failed to finalize AoE4 selection');
-  }
-}
-
 function resetAoE4State() {
   currentAoE4Civ = null;
   updateAoE4Buttons();
@@ -251,16 +258,32 @@ function displayAoE4Result(result, isFinalized = false) {
     console.error('aoe4Result div not found');
     return;
   }
+
+  const civName = result.civilization.toLowerCase().replace(/ /g, '-');
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>
-      <h4>${result.civilization}</h4>
+      <h4><a href="https://aoe4world.com/civilizations/${encodeURIComponent(civName)}" target="_blank">${result.civilization}</a></h4>
     </div>`;
+
   html += '<ul>';
-  for (const [age, choice] of Object.entries(result.ageUps)) {
-    html += `<li>Age ${age}: ${choice}</li>`;
+  if (result.civilization === 'Abbasid Dynasty' || result.civilization === 'Ayyubids') {
+    for (const [age, choice] of Object.entries(result.ageUps)) {
+      const [wing, bonus] = choice.split(' - ');
+      const wingLink = `https://aoe4world.com/civilizations/${civName}/technologies`;
+      html += `<li>Age ${age}: <a href="${wingLink}" target="_blank">${wing}</a> - ${bonus}</li>`;
+    }
+    // Add House of Wisdom link for these civilizations
+    const houseOfWisdomLink = `https://aoe4world.com/civilizations/${civName}/buildings`;
+    html += `<li><a href="${houseOfWisdomLink}" target="_blank">House of Wisdom</a></li>`;
+  } else {
+    for (const [age, choice] of Object.entries(result.ageUps)) {
+      const landmarkLink = `https://aoe4world.com/civilizations/${civName}/buildings`;
+      html += `<li>Age ${age}: <a href="${landmarkLink}" target="_blank">${choice}</a></li>`;
+    }
   }
   html += '</ul>';
+
   if (isFinalized) {
     html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
@@ -315,4 +338,3 @@ document.addEventListener('DOMContentLoaded', () => {
 // function weightedRandomChoice(options, weights) { ... }
 
 // Assume addToHistory function is defined elsewhere
-// function addToHistory(result) { ... }

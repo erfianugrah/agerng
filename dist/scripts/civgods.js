@@ -17,6 +17,25 @@ const aoe4Civilizations = [
   "Zhu Xi's Legacy",
 ];
 
+const AOE4_CIVILIZATIONS = {
+  'Abbasid Dynasty': 'abbasid',
+  Ayyubids: 'ayyubids',
+  Byzantines: 'byzantines',
+  Chinese: 'chinese',
+  'Delhi Sultanate': 'delhi',
+  English: 'english',
+  French: 'french',
+  'Holy Roman Empire': 'hre',
+  Japanese: 'japanese',
+  "Jeanne d'Arc": 'jeannedarc',
+  Malians: 'malians',
+  Mongols: 'mongols',
+  'Order of the Dragon': 'orderofthedragon',
+  Ottomans: 'ottomans',
+  Rus: 'rus',
+  "Zhu Xi's Legacy": 'zhuxi',
+};
+
 const aoe4AgeUpOptions = {
   'Abbasid Dynasty': ['Culture Wing', 'Economic Wing', 'Military Wing', 'Trade Wing'],
   Ayyubids: ['Culture Wing', 'Economic Wing', 'Military Wing', 'Trade Wing'],
