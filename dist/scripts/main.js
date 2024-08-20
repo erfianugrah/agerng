@@ -4,17 +4,17 @@ import {
   finalizeAoE4Selection,
   displayAoE4Result,
   resetAoE4State,
+  updateAoE4Buttons,
 } from './aoe4.js';
 import {
   generateRandomAoMCiv,
   finalizeAoMSelection,
   displayAoMResult,
   resetAoMState,
+  updateAoMButtons,
 } from './aom.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadHistory();
-
+function initializeEventListeners() {
   const hamburgerMenu = document.getElementById('hamburger-menu');
   const historyPanel = document.getElementById('historyPanel');
   const historyPopup = document.getElementById('historyPopup');
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     historyPanel.classList.toggle('active');
   });
 
-  // Close history panel when clicking outside of it
   document.addEventListener('click', (event) => {
     if (!historyPanel.contains(event.target) && !hamburgerMenu.contains(event.target)) {
       historyPanel.classList.remove('active');
@@ -49,8 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4>${result.name}</h4>
       </div>
     `;
-    document.getElementById('generateAoE4Btn').style.display = 'none';
-    document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
+    updateAoE4Buttons();
     document.getElementById('historyPreview').style.display = 'none';
   });
 
@@ -64,8 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4>${result.god}</h4>
       </div>
     `;
-    document.getElementById('generateAoMBtn').style.display = 'none';
-    document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
+    updateAoMButtons();
     document.getElementById('historyPreview').style.display = 'none';
   });
 
@@ -93,8 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
-});
+}
 
+document.addEventListener('DOMContentLoaded', () => {
+  loadHistory();
+  initializeEventListeners();
+  updateAoE4Buttons();
+  updateAoMButtons();
+});
 export function displayHistoryItem(index) {
   const item = history[index];
   const popupContent = document.getElementById('popupContent');

@@ -119,7 +119,7 @@ function handleAoE4SliderInput(event) {
   updateAoE4Weight(key, index, value);
 }
 
-function updateAoE4Buttons() {
+export function updateAoE4Buttons() {
   const additionalButtonsDiv = document.getElementById('aoe4AdditionalButtons');
   const generateBtn = document.getElementById('generateAoE4Btn');
   const finalizeBtn = document.getElementById('finalizeAoE4Btn');
@@ -145,12 +145,6 @@ function updateAoE4Buttons() {
       .addEventListener('click', rerollAoE4Landmarks);
   } else {
     additionalButtonsDiv.innerHTML = '';
-  }
-
-  // Remove existing event listeners before adding new ones
-  finalizeBtn.removeEventListener('click', finalizeAoE4ButtonHandler);
-  if (currentAoE4Civ) {
-    finalizeBtn.addEventListener('click', finalizeAoE4ButtonHandler);
   }
 
   // Show/hide buttons as needed
@@ -184,15 +178,7 @@ export function finalizeAoE4Selection(addToHistory = true) {
     ageUps = finalizeStandardSelection();
   }
 
-  const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
-  if (addToHistory) {
-    try {
-      window.addToHistory(result);
-    } catch (error) {
-      console.error('Error while adding to history:', error);
-    }
-  }
-  return result;
+  return { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
 }
 
 function finalizeAbbasidAyyubidSelection() {
@@ -234,16 +220,6 @@ function finalizeStandardSelection() {
     }
   }
   return ageUps;
-}
-
-function finalizeAoE4ButtonHandler() {
-  const result = finalizeAoE4Selection(true);
-  if (result) {
-    displayAoE4Result(result, true);
-    resetAoE4State();
-  } else {
-    console.error('Failed to finalize AoE4 selection');
-  }
 }
 
 export function resetAoE4State() {
@@ -312,8 +288,3 @@ function generateStandardHTML() {
   }
   return html;
 }
-
-// Initial setup
-document.addEventListener('DOMContentLoaded', () => {
-  updateAoE4Buttons();
-});
