@@ -23,10 +23,6 @@ function generateRandomAoE4Civ() {
   };
   updateAoE4WeightInputs();
   updateAoE4Buttons();
-  document.getElementById('aoe4Result').innerHTML = `<div class="selection-result">
-       <h3>Selected Civilization:</h3>
-       <h4>${currentAoE4Civ.name}</h4>
-     </div>`;
   return currentAoE4Civ;
 }
 

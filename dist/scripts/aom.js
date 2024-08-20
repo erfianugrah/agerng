@@ -14,13 +14,6 @@ function generateRandomAoMCiv() {
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
   updateAoMWeightInputs();
   updateAoMButtons();
-  document.getElementById('aomResult').innerHTML = `
-    <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${currentAoMCiv.name}</h4>
-      <h3>Major God:</h3>
-      <h4>${currentAoMCiv.god}</h4>
-    </div>`;
   return currentAoMCiv;
 }
 

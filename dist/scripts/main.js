@@ -29,8 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('generateAoE4Btn').addEventListener('click', () => {
     const result = generateRandomAoE4Civ();
-    document.getElementById('aoe4Result').innerHTML =
-      `<h3>Selected Civilization: ${result.name}</h3>`;
+    document.getElementById('aoe4Result').innerHTML = `
+            <div class="selection-result">
+                <h3>Selected Civilization:</h3>
+                <h4>${result.name}</h4>
+            </div>
+        `;
     document.getElementById('generateAoE4Btn').style.display = 'none';
     document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
@@ -38,8 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('generateAoMBtn').addEventListener('click', () => {
     const result = generateRandomAoMCiv();
-    document.getElementById('aomResult').innerHTML =
-      `<h3>Selected Civilization: ${result.name}</h3><h4>Major God: ${result.god}</h4>`;
+    document.getElementById('aomResult').innerHTML = `
+            <div class="selection-result">
+                <h3>Selected Civilization:</h3>
+                <h4>${result.name}</h4>
+                <h3>Major God:</h3>
+                <h4>${result.god}</h4>
+            </div>
+        `;
     document.getElementById('generateAoMBtn').style.display = 'none';
     document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
     document.getElementById('historyPreview').style.display = 'none';
@@ -68,10 +78,11 @@ function displayHistoryItem(index) {
 
   if (item.game === 'AoE IV') {
     html = `
-          <div class="selection-result">
-            <h3>AoE IV:</h3>
-            <h4>${item.civilization}</h4>
-          </div>`;
+            <div class="selection-result">
+                <h3>AoE IV:</h3>
+                <h4>${item.civilization}</h4>
+            </div>
+        `;
     html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
       html += `<li>Age ${age}: ${choice}</li>`;
@@ -79,12 +90,13 @@ function displayHistoryItem(index) {
     html += '</ul>';
   } else if (item.game === 'AoM') {
     html = `
-          <div class="selection-result">
-            <h3>AoM:</h3>
-            <h4>${item.civilization}</h4>
-            <h3>Major God:</h3>
-            <h4>${item.majorGod}</h4>
-          </div>`;
+            <div class="selection-result">
+                <h3>AoM:</h3>
+                <h4>${item.civilization}</h4>
+                <h3>Major God:</h3>
+                <h4>${item.majorGod}</h4>
+            </div>
+        `;
     html += '<ul>';
     for (const [age, god] of Object.entries(item.minorGods)) {
       html += `<li>${age} Age: ${god}</li>`;
