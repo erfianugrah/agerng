@@ -48,9 +48,14 @@ function updateAoMWeightInputs() {
   }
 
   if (!currentAoMCiv) {
-    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
+    weightsDiv.innerHTML =
+      '<p class="placeholder-text">Generate an Age of Mythology civilization to adjust weights.</p>';
+    weightsDiv.classList.add('weights-box-empty');
     return;
   }
+
+  // Remove the empty class
+  weightsDiv.classList.remove('weights-box-empty');
 
   let html = `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
@@ -168,7 +173,15 @@ function finalizeAoMButtonHandler() {
 function resetAoMState() {
   currentAoMCiv = null;
   updateAoMButtons();
-  updateAoMWeightInputs(); // This will now clear the weights div
+  updateAoMWeightInputs();
+
+  // Reset result box to empty state
+  const resultDiv = document.getElementById('aomResult');
+  if (resultDiv) {
+    resultDiv.innerHTML =
+      '<p class="placeholder-text">Generate an Age of Mythology civilization to see the result here.</p>';
+    resultDiv.classList.add('result-box-empty');
+  }
 }
 
 function displayAoMResult(result, isFinalized = false) {
@@ -178,6 +191,10 @@ function displayAoMResult(result, isFinalized = false) {
     console.error('aomResult div not found');
     return;
   }
+
+  // Remove the empty class
+  resultDiv.classList.remove('result-box-empty');
+
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>

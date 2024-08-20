@@ -11,6 +11,12 @@
 	--transition: all 0.3s ease;
 }
 
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
 body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	line-height: 1.6;
@@ -300,7 +306,9 @@ li:hover {
 }
 
 #aoe4Result,
-#aomResult {
+#aomResult,
+#aoe4Weights,
+#aomWeights {
 	background-color: #f7f9fa;
 	padding: 25px;
 	border-radius: var(--border-radius);
@@ -353,6 +361,37 @@ li:hover {
 
 .selection-result a:hover {
 	opacity: 0.8;
+}
+
+.result-box,
+.weights-box {
+	min-height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border: 2px dashed var(--border-color);
+	border-radius: var(--border-radius);
+	transition: var(--transition);
+}
+
+.result-box-empty,
+.weights-box-empty {
+	background-color: #f9f9f9;
+}
+
+.placeholder-text {
+	color: #888;
+	font-style: italic;
+	padding: 20px;
+}
+
+#aoe4Result:not(.result-box-empty),
+#aomResult:not(.result-box-empty),
+#aoe4Weights:not(.weights-box-empty),
+#aomWeights:not(.weights-box-empty) {
+	border: none;
+	background-color: white;
 }
 
 @media (max-width: 1200px) {

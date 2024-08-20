@@ -80,10 +80,14 @@ function updateAoE4WeightInputs() {
   }
 
   if (!currentAoE4Civ) {
-    weightsDiv.innerHTML = ''; // Clear the content if no civilization is selected
+    weightsDiv.innerHTML =
+      '<p class="placeholder-text">Generate an Age of Empires IV civilization to adjust weights.</p>';
+    weightsDiv.classList.add('weights-box-empty');
     return;
   }
 
+  // Remove the empty class
+  weightsDiv.classList.remove('weights-box-empty');
   let html = '<h3>Weights for ' + currentAoE4Civ.name + ':</h3>';
 
   if (currentAoE4Civ.name === 'Abbasid Dynasty' || currentAoE4Civ.name === 'Ayyubids') {
@@ -237,7 +241,15 @@ function finalizeAoE4ButtonHandler() {
 function resetAoE4State() {
   currentAoE4Civ = null;
   updateAoE4Buttons();
-  updateAoE4WeightInputs(); // This will now clear the weights div
+  updateAoE4WeightInputs();
+
+  // Reset result box to empty state
+  const resultDiv = document.getElementById('aoe4Result');
+  if (resultDiv) {
+    resultDiv.innerHTML =
+      '<p class="placeholder-text">Generate an Age of Empires IV civilization to see the result here.</p>';
+    resultDiv.classList.add('result-box-empty');
+  }
 }
 
 function displayAoE4Result(result, isFinalized = false) {
@@ -247,6 +259,9 @@ function displayAoE4Result(result, isFinalized = false) {
     console.error('aoe4Result div not found');
     return;
   }
+
+  // Remove the empty class
+  resultDiv.classList.remove('result-box-empty');
 
   const civName = result.civilization || result.name;
   const civSlug = AOE4_CIVILIZATIONS[civName];
