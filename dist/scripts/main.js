@@ -1,3 +1,17 @@
+import { loadHistory, addToHistory, exportJSON, exportCSV } from './utils.js';
+import {
+  generateRandomAoE4Civ,
+  finalizeAoE4Selection,
+  displayAoE4Result,
+  resetAoE4State,
+} from './aoe4.js';
+import {
+  generateRandomAoMCiv,
+  finalizeAoMSelection,
+  displayAoMResult,
+  resetAoMState,
+} from './aom.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   loadHistory();
 
@@ -81,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
 });
 
-function displayHistoryItem(index) {
+export function displayHistoryItem(index) {
   const item = history[index];
   const popupContent = document.getElementById('popupContent');
   let html = '';
@@ -117,20 +131,3 @@ function displayHistoryItem(index) {
   popupContent.innerHTML = html;
   document.getElementById('historyPopup').style.display = 'block';
 }
-
-// These functions should be defined in their respective files (aoe4.js and aom.js)
-// but are called from main.js. Ensure they are available globally.
-// function generateRandomAoE4Civ() { ... }
-// function generateRandomAoMCiv() { ... }
-// function finalizeAoE4Selection() { ... }
-// function finalizeAoMSelection() { ... }
-// function displayAoE4Result() { ... }
-// function displayAoMResult() { ... }
-// function resetAoE4State() { ... }
-// function resetAoMState() { ... }
-
-// Assume these functions are defined in utils.js
-// function loadHistory() { ... }
-// function addToHistory(result) { ... }
-// function exportJSON() { ... }
-// function exportCSV() { ... }

@@ -1,3 +1,6 @@
+import { weightedRandomChoice } from './utils.js';
+import { aomCivilizations, aomGods } from './civgods.js';
+
 let currentAoMCiv = null;
 
 function initializeAoMWeights(civ, god) {
@@ -8,7 +11,7 @@ function initializeAoMWeights(civ, god) {
   };
 }
 
-function generateRandomAoMCiv() {
+export function generateRandomAoMCiv() {
   const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
   const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
@@ -127,7 +130,7 @@ function rerollAoMGods() {
   displayAoMResult(result);
 }
 
-function finalizeAoMSelection(addToHistory = true) {
+export function finalizeAoMSelection(addToHistory = true) {
   if (!currentAoMCiv) return null;
   const minorGods = {};
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
@@ -164,13 +167,13 @@ function finalizeAoMButtonHandler() {
   }
 }
 
-function resetAoMState() {
+export function resetAoMState() {
   currentAoMCiv = null;
   updateAoMButtons();
   updateAoMWeightInputs(); // This will now clear the weights div
 }
 
-function displayAoMResult(result, isFinalized = false) {
+export function displayAoMResult(result, isFinalized = false) {
   const resultDiv = document.getElementById('aomResult');
   let html = `
     <div class="selection-result">
@@ -194,9 +197,3 @@ function displayAoMResult(result, isFinalized = false) {
 document.addEventListener('DOMContentLoaded', () => {
   updateAoMButtons();
 });
-
-// Assume weightedRandomChoice function is defined elsewhere
-// function weightedRandomChoice(options, weights) { ... }
-
-// Assume addToHistory function is defined elsewhere
-// function addToHistory(result) { ... }

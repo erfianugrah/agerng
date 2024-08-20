@@ -1,4 +1,4 @@
-const aoe4Civilizations = [
+export const aoe4Civilizations = [
   'Abbasid Dynasty',
   'Ayyubids',
   'Byzantines',
@@ -17,7 +17,7 @@ const aoe4Civilizations = [
   "Zhu Xi's Legacy",
 ];
 
-const AOE4_CIVILIZATIONS = {
+export const AOE4_CIVILIZATIONS = {
   'Abbasid Dynasty': 'abbasid',
   Ayyubids: 'ayyubids',
   Byzantines: 'byzantines',
@@ -36,7 +36,7 @@ const AOE4_CIVILIZATIONS = {
   "Zhu Xi's Legacy": 'zhuxi',
 };
 
-const aoe4AgeUpOptions = {
+export const aoe4AgeUpOptions = {
   'Abbasid Dynasty': ['Culture Wing', 'Economic Wing', 'Military Wing', 'Trade Wing'],
   Ayyubids: ['Culture Wing', 'Economic Wing', 'Military Wing', 'Trade Wing'],
   Byzantines: {
@@ -111,7 +111,7 @@ const aoe4AgeUpOptions = {
   },
 };
 
-const aoe4AyyubidBonuses = {
+export const aoe4AyyubidBonuses = {
   'Culture Wing': {
     Advancement: {
       II: 'Age up takes 96s, costs 225 food, 125 gold',
@@ -162,9 +162,9 @@ const aoe4AyyubidBonuses = {
   },
 };
 
-const aomCivilizations = ['Greeks', 'Egyptians', 'Norse', 'Atlanteans'];
+export const aomCivilizations = ['Greeks', 'Egyptians', 'Norse', 'Atlanteans'];
 
-const aomGods = {
+export const aomGods = {
   Greeks: {
     major: ['Zeus', 'Poseidon', 'Hades'],
     minor: {
