@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const historyPopup = document.getElementById('historyPopup');
   const closePopup = document.querySelector('.close-popup');
 
-  hamburgerMenu.addEventListener('click', toggleHistoryPanel);
+  hamburgerMenu.addEventListener('click', () => {
+    historyPanel.classList.toggle('active');
+  });
 
   // Close history panel when clicking outside of it
   document.addEventListener('click', (event) => {
@@ -33,72 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
 
-  // Add keyboard shortcuts
-  document.addEventListener('keydown', handleKeyboardShortcuts);
-
-  // Add dark mode toggle
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  darkModeToggle.addEventListener('click', toggleDarkMode);
-
-  // Add animation to history items
-  const historyList = document.getElementById('historyList');
-  historyList.addEventListener('click', animateHistoryItem);
-
   // Initial setup
   updateAoE4Buttons();
   updateAoMButtons();
-  initializeDarkMode();
 });
-
-function handleKeyboardShortcuts(event) {
-  if (event.ctrlKey || event.metaKey) {
-    switch (event.key.toLowerCase()) {
-      case 'e':
-        event.preventDefault();
-        handleGenerateAoE4();
-        break;
-      case 'm':
-        event.preventDefault();
-        handleGenerateAoM();
-        break;
-      case 'h':
-        event.preventDefault();
-        toggleHistoryPanel();
-        break;
-    }
-  }
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-}
-
-function initializeDarkMode() {
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-  }
-}
-
-function animateHistoryItem(event) {
-  if (event.target.tagName === 'LI') {
-    event.target.classList.add('history-item-click');
-    setTimeout(() => {
-      event.target.classList.remove('history-item-click');
-    }, 300);
-  }
-}
-
-function toggleHistoryPanel() {
-  const historyPanel = document.getElementById('historyPanel');
-  historyPanel.classList.toggle('active');
-}
 
 function handleGenerateAoE4() {
   console.log('handleGenerateAoE4 called');
   const result = generateRandomAoE4Civ();
   console.log('AoE4 result:', result);
-  displayAoE4Result(result, false);
+  displayAoE4Result(result, false); // Display result without finalizing
   document.getElementById('generateAoE4Btn').style.display = 'none';
   document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -109,7 +55,7 @@ function handleGenerateAoM() {
   console.log('handleGenerateAoM called');
   const result = generateRandomAoMCiv();
   console.log('AoM result:', result);
-  displayAoMResult(result, false);
+  displayAoMResult(result, false); // Display result without finalizing
   document.getElementById('generateAoMBtn').style.display = 'none';
   document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -118,10 +64,10 @@ function handleGenerateAoM() {
 
 function handleFinalizeAoE4() {
   console.log('handleFinalizeAoE4 called');
-  const result = finalizeAoE4Selection(false);
+  const result = finalizeAoE4Selection(false); // Set addToHistory to false
   if (result) {
     displayAoE4Result(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoE4State();
   } else {
     console.error('Failed to finalize AoE4 selection');
@@ -131,10 +77,10 @@ function handleFinalizeAoE4() {
 
 function handleFinalizeAoM() {
   console.log('handleFinalizeAoM called');
-  const result = finalizeAoMSelection(false);
+  const result = finalizeAoMSelection(false); // Set addToHistory to false
   if (result) {
     displayAoMResult(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoMState();
   } else {
     console.error('Failed to finalize AoM selection');
@@ -148,50 +94,31 @@ function displayHistoryItem(index) {
   let html = '';
 
   if (item.game === 'AoE IV') {
-    const civSlug = AOE4_CIVILIZATIONS[item.civilization];
     html = `
       <div class="selection-result">
-        <h3>Age of Empires IV</h3>
-        <h4><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${item.civilization}</a></h4>
+        <h3>AoE IV:</h3>
+        <h4>${item.civilization}</h4>
       </div>
-      <div class="age-up-choices">
     `;
+    html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
-      let linkUrl;
-      if (item.civilization === 'Abbasid Dynasty' || item.civilization === 'Ayyubids') {
-        const wingSlug = choice.toLowerCase().replace(/\s+/g, '-');
-        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
-      } else {
-        const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
-        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
-      }
-      html += `
-        <div class="age-up-item">
-          <span class="age-label">Age ${age}:</span>
-          <a href="${linkUrl}" target="_blank" class="age-choice">${choice}</a>
-        </div>
-      `;
+      html += `<li>Age ${age}: ${choice}</li>`;
     }
-    html += '</div>';
+    html += '</ul>';
   } else if (item.game === 'AoM') {
     html = `
       <div class="selection-result">
-        <h3>Age of Mythology</h3>
+        <h3>AoM:</h3>
         <h4>${item.civilization}</h4>
         <h3>Major God:</h3>
         <h4>${item.majorGod}</h4>
       </div>
-      <div class="god-choices">
     `;
+    html += '<ul>';
     for (const [age, god] of Object.entries(item.minorGods)) {
-      html += `
-        <div class="god-choice-item">
-          <span class="age-label">${age} Age:</span>
-          <span class="god-name">${god}</span>
-        </div>
-      `;
+      html += `<li>${age} Age: ${god}</li>`;
     }
-    html += '</div>';
+    html += '</ul>';
   }
 
   popupContent.innerHTML = html;
