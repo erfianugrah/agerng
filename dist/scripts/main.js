@@ -6,9 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const historyPopup = document.getElementById('historyPopup');
   const closePopup = document.querySelector('.close-popup');
 
-  hamburgerMenu.addEventListener('click', () => {
-    historyPanel.classList.toggle('active');
-  });
+  hamburgerMenu.addEventListener('click', toggleHistoryPanel);
 
   // Close history panel when clicking outside of it
   document.addEventListener('click', (event) => {
@@ -35,16 +33,72 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('exportJSON').addEventListener('click', exportJSON);
   document.getElementById('exportCSV').addEventListener('click', exportCSV);
 
+  // Add keyboard shortcuts
+  document.addEventListener('keydown', handleKeyboardShortcuts);
+
+  // Add dark mode toggle
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  darkModeToggle.addEventListener('click', toggleDarkMode);
+
+  // Add animation to history items
+  const historyList = document.getElementById('historyList');
+  historyList.addEventListener('click', animateHistoryItem);
+
   // Initial setup
   updateAoE4Buttons();
   updateAoMButtons();
+  initializeDarkMode();
 });
+
+function handleKeyboardShortcuts(event) {
+  if (event.ctrlKey || event.metaKey) {
+    switch (event.key.toLowerCase()) {
+      case 'e':
+        event.preventDefault();
+        handleGenerateAoE4();
+        break;
+      case 'm':
+        event.preventDefault();
+        handleGenerateAoM();
+        break;
+      case 'h':
+        event.preventDefault();
+        toggleHistoryPanel();
+        break;
+    }
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+}
+
+function initializeDarkMode() {
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+}
+
+function animateHistoryItem(event) {
+  if (event.target.tagName === 'LI') {
+    event.target.classList.add('history-item-click');
+    setTimeout(() => {
+      event.target.classList.remove('history-item-click');
+    }, 300);
+  }
+}
+
+function toggleHistoryPanel() {
+  const historyPanel = document.getElementById('historyPanel');
+  historyPanel.classList.toggle('active');
+}
 
 function handleGenerateAoE4() {
   console.log('handleGenerateAoE4 called');
   const result = generateRandomAoE4Civ();
   console.log('AoE4 result:', result);
-  displayAoE4Result(result, false); // Display result without finalizing
+  displayAoE4Result(result, false);
   document.getElementById('generateAoE4Btn').style.display = 'none';
   document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -55,7 +109,7 @@ function handleGenerateAoM() {
   console.log('handleGenerateAoM called');
   const result = generateRandomAoMCiv();
   console.log('AoM result:', result);
-  displayAoMResult(result, false); // Display result without finalizing
+  displayAoMResult(result, false);
   document.getElementById('generateAoMBtn').style.display = 'none';
   document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -64,10 +118,10 @@ function handleGenerateAoM() {
 
 function handleFinalizeAoE4() {
   console.log('handleFinalizeAoE4 called');
-  const result = finalizeAoE4Selection(false); // Set addToHistory to false
+  const result = finalizeAoE4Selection(false);
   if (result) {
     displayAoE4Result(result, true);
-    addToHistory(result); // Add to history here
+    addToHistory(result);
     resetAoE4State();
   } else {
     console.error('Failed to finalize AoE4 selection');
@@ -77,10 +131,10 @@ function handleFinalizeAoE4() {
 
 function handleFinalizeAoM() {
   console.log('handleFinalizeAoM called');
-  const result = finalizeAoMSelection(false); // Set addToHistory to false
+  const result = finalizeAoMSelection(false);
   if (result) {
     displayAoMResult(result, true);
-    addToHistory(result); // Add to history here
+    addToHistory(result);
     resetAoMState();
   } else {
     console.error('Failed to finalize AoM selection');
@@ -120,7 +174,6 @@ function displayHistoryItem(index) {
     }
     html += '</div>';
   } else if (item.game === 'AoM') {
-    // AoM content remains unchanged
     html = `
       <div class="selection-result">
         <h3>Age of Mythology</h3>
