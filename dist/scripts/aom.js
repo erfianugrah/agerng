@@ -16,7 +16,11 @@ function generateRandomAoMCiv() {
   console.log('Generated AoM civilization:', currentAoMCiv);
   updateAoMWeightInputs();
   updateAoMButtons();
-  return currentAoMCiv;
+
+  // Add this line to generate the minor gods immediately
+  const result = finalizeAoMSelection(false);
+
+  return result;
 }
 
 function updateAoMWeight(key, index, value) {

@@ -23,7 +23,11 @@ function generateRandomAoE4Civ() {
   };
   updateAoE4WeightInputs();
   updateAoE4Buttons();
-  return currentAoE4Civ;
+
+  // Add this line to generate the age-ups immediately
+  const ageUps = finalizeAoE4Selection(false);
+
+  return { civilization: civ, ageUps };
 }
 
 function updateAoE4Weight(key, index, value) {
