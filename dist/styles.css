@@ -1,6 +1,6 @@
 :root {
-	--primary-color: #3498db;
-	--primary-dark: #2980b9;
+	--primary-color: #4a90e2;
+	--primary-dark: #3a7bd5;
 	--secondary-color: #2c3e50;
 	--background-color: #f0f4f8;
 	--text-color: #333333;
@@ -9,12 +9,6 @@
 	--border-radius: 12px;
 	--sidebar-width: 300px;
 	--transition: all 0.3s ease;
-}
-
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
 }
 
 body {
@@ -46,6 +40,11 @@ body {
 	cursor: pointer;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
+	transition: var(--transition);
+}
+
+.hamburger-menu:hover {
+	background-color: var(--primary-dark);
 }
 
 .history-panel {
@@ -62,6 +61,11 @@ body {
 	overflow-y: auto;
 	z-index: 10;
 	transition: var(--transition);
+}
+
+.history-panel h2 {
+	margin-bottom: 20px;
+	color: var(--secondary-color);
 }
 
 .history-list {
@@ -142,13 +146,12 @@ body {
 	font-size: 28px;
 	font-weight: bold;
 	cursor: pointer;
+	transition: var(--transition);
 }
 
 .close-popup:hover,
 .close-popup:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
+	color: var(--primary-color);
 }
 
 h1,
