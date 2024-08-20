@@ -94,31 +94,51 @@ function displayHistoryItem(index) {
   let html = '';
 
   if (item.game === 'AoE IV') {
+    const civSlug = AOE4_CIVILIZATIONS[item.civilization];
     html = `
       <div class="selection-result">
-        <h3>AoE IV:</h3>
-        <h4>${item.civilization}</h4>
+        <h3>Age of Empires IV</h3>
+        <h4><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${item.civilization}</a></h4>
       </div>
+      <div class="age-up-choices">
     `;
-    html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
-      html += `<li>Age ${age}: ${choice}</li>`;
+      let linkUrl;
+      if (item.civilization === 'Abbasid Dynasty' || item.civilization === 'Ayyubids') {
+        const wingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
+      } else {
+        const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
+      }
+      html += `
+        <div class="age-up-item">
+          <span class="age-label">Age ${age}:</span>
+          <a href="${linkUrl}" target="_blank" class="age-choice">${choice}</a>
+        </div>
+      `;
     }
-    html += '</ul>';
+    html += '</div>';
   } else if (item.game === 'AoM') {
+    // AoM content remains unchanged
     html = `
       <div class="selection-result">
-        <h3>AoM:</h3>
+        <h3>Age of Mythology</h3>
         <h4>${item.civilization}</h4>
         <h3>Major God:</h3>
         <h4>${item.majorGod}</h4>
       </div>
+      <div class="god-choices">
     `;
-    html += '<ul>';
     for (const [age, god] of Object.entries(item.minorGods)) {
-      html += `<li>${age} Age: ${god}</li>`;
+      html += `
+        <div class="god-choice-item">
+          <span class="age-label">${age} Age:</span>
+          <span class="god-name">${god}</span>
+        </div>
+      `;
     }
-    html += '</ul>';
+    html += '</div>';
   }
 
   popupContent.innerHTML = html;
