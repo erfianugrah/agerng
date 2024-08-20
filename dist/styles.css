@@ -35,22 +35,23 @@ body {
 .hamburger-menu {
 	display: none;
 	position: fixed;
-	top: 10px;
-	left: 10px;
+	top: 20px;
+	left: 20px;
 	z-index: 1000;
 	background-color: var(--primary-color);
 	color: white;
 	border: none;
 	font-size: 24px;
-	padding: 5px 10px;
+	padding: 10px 15px;
 	cursor: pointer;
 	border-radius: var(--border-radius);
+	box-shadow: var(--box-shadow);
 }
 
 .history-panel {
 	width: var(--sidebar-width);
 	background-color: white;
-	padding: 20px;
+	padding: 30px;
 	box-shadow: var(--box-shadow);
 	display: flex;
 	flex-direction: column;
@@ -72,7 +73,7 @@ body {
 .main-content {
 	flex-grow: 1;
 	margin-left: var(--sidebar-width);
-	padding: 30px;
+	padding: 40px;
 	display: flex;
 	flex-direction: column;
 	min-height: calc(100vh - 60px);
@@ -80,7 +81,7 @@ body {
 
 .game-columns {
 	display: flex;
-	gap: 30px;
+	gap: 40px;
 	flex-grow: 1;
 }
 
@@ -88,7 +89,7 @@ body {
 	flex: 1;
 	background-color: white;
 	border: 1px solid var(--border-color);
-	padding: 25px;
+	padding: 30px;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
 	display: flex;
@@ -97,16 +98,17 @@ body {
 }
 
 .game-box:hover {
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+	transform: translateY(-5px);
 }
 
 .history-preview {
 	background-color: white;
 	border: 1px solid var(--border-color);
-	padding: 20px;
+	padding: 25px;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
-	margin-bottom: 30px;
+	margin-bottom: 40px;
 	display: none;
 }
 
@@ -153,7 +155,7 @@ h1,
 h2,
 h3 {
 	color: var(--secondary-color);
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 
 button {
@@ -169,12 +171,13 @@ button {
 	margin-bottom: 15px;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
+	box-shadow: var(--box-shadow);
 }
 
 button:hover {
 	background-color: var(--primary-dark);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .button-container,
@@ -182,13 +185,13 @@ button:hover {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 15px;
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 
 .export-buttons {
 	margin-top: auto;
 	display: flex;
-	gap: 10px;
+	gap: 15px;
 	justify-content: space-between;
 }
 
@@ -200,27 +203,27 @@ button:hover {
 
 #aoe4Weights,
 #aomWeights {
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 	background-color: #f7f9fa;
 	border-radius: var(--border-radius);
-	padding: 20px;
+	padding: 25px;
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .weight-group {
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 
 .weight-group h4 {
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 	color: var(--secondary-color);
-	font-size: 18px;
+	font-size: 1.2em;
 }
 
 .weight-item {
 	display: flex;
 	align-items: center;
-	margin-bottom: 12px;
+	margin-bottom: 15px;
 }
 
 .weight-label {
@@ -274,10 +277,11 @@ button:hover {
 
 ul {
 	list-style-type: none;
+	padding-left: 0;
 }
 
 li {
-	margin-bottom: 12px;
+	margin-bottom: 15px;
 	padding: 15px;
 	background-color: #f7f9fa;
 	border-radius: var(--border-radius);
@@ -289,22 +293,23 @@ li {
 li:hover {
 	background-color: #e3e8ec;
 	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #aoe4Result,
 #aomResult {
 	background-color: #f7f9fa;
-	padding: 20px;
+	padding: 25px;
 	border-radius: var(--border-radius);
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 
 .site-footer {
 	background-color: var(--secondary-color);
 	color: #fff;
 	text-align: center;
-	padding: 20px;
+	padding: 25px;
 	margin-top: auto;
 	font-size: 0.9em;
 	width: 100%;
@@ -370,7 +375,7 @@ li:hover {
 
 	.main-content {
 		margin-left: 0;
-		padding-top: 60px;
+		padding-top: 80px;
 	}
 
 	.game-columns {
@@ -391,21 +396,21 @@ li:hover {
 	}
 
 	.main-content {
-		padding: 20px;
+		padding: 30px 20px;
 	}
 
 	.game-box {
-		padding: 20px;
+		padding: 25px;
 	}
 
 	.history-popup-content {
-		padding: 20px;
+		padding: 25px;
 		margin: 10% auto;
 		width: 95%;
 	}
 
 	.site-footer {
-		padding: 15px;
+		padding: 20px;
 		font-size: 0.8em;
 	}
 }
