@@ -261,18 +261,19 @@ function displayAoE4Result(result, isFinalized = false) {
   let html = `
     <div class="selection-result">
       <h3>Selected Civilization:</h3>
-      <h4>${result.civilization}</h4>
+      <h4>${result.civilization || result.name}</h4>
     </div>`;
-  html += '<ul>';
-  for (const [age, choice] of Object.entries(result.ageUps)) {
-    html += `<li>Age ${age}: ${choice}</li>`;
+  if (result.ageUps) {
+    html += '<ul>';
+    for (const [age, choice] of Object.entries(result.ageUps)) {
+      html += `<li>Age ${age}: ${choice}</li>`;
+    }
+    html += '</ul>';
   }
-  html += '</ul>';
   if (isFinalized) {
     html += '<p><strong>This result has been finalised and added to history.</strong></p>';
   }
   resultDiv.innerHTML = html;
-  // Remove the addToHistory call from here
 }
 
 function generateAbbasidAyyubidHTML() {

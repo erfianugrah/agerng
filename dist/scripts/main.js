@@ -44,12 +44,7 @@ function handleGenerateAoE4() {
   console.log('handleGenerateAoE4 called');
   const result = generateRandomAoE4Civ();
   console.log('AoE4 result:', result);
-  document.getElementById('aoe4Result').innerHTML = `
-    <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${result.name}</h4>
-    </div>
-  `;
+  displayAoE4Result(result, false); // Display result without finalizing
   document.getElementById('generateAoE4Btn').style.display = 'none';
   document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -60,14 +55,7 @@ function handleGenerateAoM() {
   console.log('handleGenerateAoM called');
   const result = generateRandomAoMCiv();
   console.log('AoM result:', result);
-  document.getElementById('aomResult').innerHTML = `
-    <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${result.name}</h4>
-      <h3>Major God:</h3>
-      <h4>${result.god}</h4>
-    </div>
-  `;
+  displayAoMResult(result, false); // Display result without finalizing
   document.getElementById('generateAoMBtn').style.display = 'none';
   document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
   document.getElementById('historyPreview').style.display = 'none';
@@ -75,6 +63,7 @@ function handleGenerateAoM() {
 }
 
 function handleFinalizeAoE4() {
+  console.log('handleFinalizeAoE4 called');
   const result = finalizeAoE4Selection(true);
   if (result) {
     displayAoE4Result(result, true);
@@ -83,9 +72,11 @@ function handleFinalizeAoE4() {
   } else {
     console.error('Failed to finalize AoE4 selection');
   }
+  console.log('handleFinalizeAoE4 completed');
 }
 
 function handleFinalizeAoM() {
+  console.log('handleFinalizeAoM called');
   const result = finalizeAoMSelection(true);
   if (result) {
     displayAoMResult(result, true);
@@ -94,6 +85,7 @@ function handleFinalizeAoM() {
   } else {
     console.error('Failed to finalize AoM selection');
   }
+  console.log('handleFinalizeAoM completed');
 }
 
 function displayHistoryItem(index) {
