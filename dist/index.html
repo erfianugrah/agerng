@@ -4,70 +4,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Age of Empires Random Civilization Generator</title>
+  <title>Age Randomizer</title>
+  <meta name="description" content="Randomize civilizations for Age of Empires IV and Age of Mythology">
+  <meta property="og:title" content="Age Randomizer">
+  <meta property="og:description" content="Randomize civilizations for Age of Empires IV and Age of Mythology">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
   <div class="page-wrapper">
-    <button id="hamburger-menu" class="hamburger-menu" aria-label="Toggle menu">☰</button>
-
-    <aside id="historyPanel" class="history-panel">
+    <button id="hamburger-menu" class="hamburger-menu" aria-label="Toggle history panel">☰</button>
+    <div class="history-panel" id="historyPanel">
       <h2>History</h2>
-      <div id="historyList" class="history-list"></div>
+      <div class="history-list" id="historyList"></div>
       <div class="export-buttons">
-        <button id="exportJSON">Export JSON</button>
-        <button id="exportCSV">Export CSV</button>
+        <button id="exportJSON" aria-label="Export history as JSON">Export JSON</button>
+        <button id="exportCSV" aria-label="Export history as CSV">Export CSV</button>
       </div>
-    </aside>
-
-    <main class="main-content">
-      <section id="historyPreview" class="history-preview"></section>
-
+    </div>
+    <div class="main-content">
+      <div class="history-preview" id="historyPreview"></div>
       <div class="game-columns">
-        <section class="game-box">
+        <div class="game-box">
           <h2>Age of Empires IV</h2>
-          <div id="aoe4Result" class="game-result"></div>
-          <div id="aoe4Weights" class="game-weights"></div>
+          <div id="aoe4Result"></div>
+          <div id="aoe4Weights"></div>
           <div class="button-container">
-            <button id="generateAoE4Btn">Generate AoE IV Civ</button>
-            <button id="finalizeAoE4Btn">Finalize Selection</button>
+            <button id="generateAoE4Btn" aria-label="Generate Age of Empires IV civilization">Generate AoE IV
+              Civ</button>
+            <button id="finalizeAoE4Btn" style="display: none;"
+              aria-label="Finalize Age of Empires IV selection">Finalize Selection</button>
           </div>
           <div id="aoe4AdditionalButtons" class="additional-buttons"></div>
-        </section>
-
-        <section class="game-box">
+        </div>
+        <div class="game-box">
           <h2>Age of Mythology</h2>
-          <div id="aomResult" class="game-result"></div>
-          <div id="aomWeights" class="game-weights"></div>
+          <div id="aomResult"></div>
+          <div id="aomWeights"></div>
           <div class="button-container">
-            <button id="generateAoMBtn">Generate AoM Civ</button>
-            <button id="finalizeAoMBtn">Finalize Selection</button>
+            <button id="generateAoMBtn" aria-label="Generate Age of Mythology civilization">Generate AoM Civ</button>
+            <button id="finalizeAoMBtn" style="display: none;" aria-label="Finalize Age of Mythology selection">Finalize
+              Selection</button>
           </div>
           <div id="aomAdditionalButtons" class="additional-buttons"></div>
-        </section>
+        </div>
       </div>
-    </main>
+    </div>
   </div>
-
   <div id="historyPopup" class="history-popup">
     <div class="history-popup-content">
-      <button class="close-popup" aria-label="Close popup">&times;</button>
+      <span class="close-popup" aria-label="Close history popup">&times;</span>
       <div id="popupContent"></div>
     </div>
   </div>
-
   <footer class="site-footer">
     <p>Created by Erfi Anugrah</p>
     <p>Age of Empires IV© Microsoft Corporation. agerng.pages.dev was created under Microsoft's "Game Content Usage
-      Rules" using assets from Age of Empires IV, and it is not endorsed by or affiliated with Microsoft.</p>
+      Rules"
+      using assets from Age of Empires IV, and it is not endorsed by or affiliated with Microsoft.</p>
   </footer>
-
-  <script src="scripts/civgods.js"></script>
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/aoe4.js"></script>
-  <script src="scripts/aom.js"></script>
-  <script src="scripts/main.js"></script>
+  <script src="scripts/utils.js" defer></script>
+  <script src="scripts/civgods.js" defer></script>
+  <script src="scripts/aoe4.js" defer></script>
+  <script src="scripts/aom.js" defer></script>
+  <script src="scripts/main.js" defer></script>
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+    data-cf-beacon='{"token": "d479f44c0b4947bcbea77863ebbe42d9"}'></script>
 </body>
 
 </html>

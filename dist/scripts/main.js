@@ -1,163 +1,130 @@
-// DOM Elements
-const elements = {
-  hamburgerMenu: document.getElementById('hamburger-menu'),
-  historyPanel: document.getElementById('historyPanel'),
-  historyPopup: document.getElementById('historyPopup'),
-  closePopup: document.querySelector('.close-popup'),
-  historyPreview: document.getElementById('historyPreview'),
-  generateAoE4Btn: document.getElementById('generateAoE4Btn'),
-  generateAoMBtn: document.getElementById('generateAoMBtn'),
-  finalizeAoE4Btn: document.getElementById('finalizeAoE4Btn'),
-  finalizeAoMBtn: document.getElementById('finalizeAoMBtn'),
-  exportJSONBtn: document.getElementById('exportJSON'),
-  exportCSVBtn: document.getElementById('exportCSV'),
-};
+document.addEventListener('DOMContentLoaded', () => {
+  loadHistory();
 
-// Event Listeners
-function setupEventListeners() {
-  elements.hamburgerMenu.addEventListener('click', toggleHistoryPanel);
-  document.addEventListener('click', closeHistoryPanelOutside);
-  elements.closePopup.addEventListener('click', closeHistoryPopup);
-  globalThis.addEventListener('click', closeHistoryPopupOutside);
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const historyPanel = document.getElementById('historyPanel');
+  const historyPopup = document.getElementById('historyPopup');
+  const closePopup = document.querySelector('.close-popup');
 
-  elements.generateAoE4Btn.addEventListener('click', handleGenerateAoE4);
-  elements.generateAoMBtn.addEventListener('click', handleGenerateAoM);
-  elements.finalizeAoE4Btn.addEventListener('click', handleFinalizeAoE4);
-  elements.finalizeAoMBtn.addEventListener('click', handleFinalizeAoM);
+  hamburgerMenu.addEventListener('click', () => {
+    historyPanel.classList.toggle('active');
+  });
 
-  elements.exportJSONBtn.addEventListener('click', exportJSON);
-  elements.exportCSVBtn.addEventListener('click', exportCSV);
-}
+  // Close history panel when clicking outside of it
+  document.addEventListener('click', (event) => {
+    if (!historyPanel.contains(event.target) && !hamburgerMenu.contains(event.target)) {
+      historyPanel.classList.remove('active');
+    }
+  });
 
-// UI Functions
-function toggleHistoryPanel() {
-  elements.historyPanel.classList.toggle('active');
-}
+  closePopup.addEventListener('click', () => {
+    historyPopup.style.display = 'none';
+  });
 
-function closeHistoryPanelOutside(event) {
-  if (
-    !elements.historyPanel.contains(event.target) &&
-    !elements.hamburgerMenu.contains(event.target)
-  ) {
-    elements.historyPanel.classList.remove('active');
-  }
-}
+  globalThis.addEventListener('click', (event) => {
+    if (event.target === historyPopup) {
+      historyPopup.style.display = 'none';
+    }
+  });
 
-function closeHistoryPopup() {
-  elements.historyPopup.style.display = 'none';
-}
+  document.getElementById('generateAoE4Btn').addEventListener('click', handleGenerateAoE4);
+  document.getElementById('generateAoMBtn').addEventListener('click', handleGenerateAoM);
+  document.getElementById('finalizeAoE4Btn').addEventListener('click', handleFinalizeAoE4);
+  document.getElementById('finalizeAoMBtn').addEventListener('click', handleFinalizeAoM);
 
-function closeHistoryPopupOutside(event) {
-  if (event.target === elements.historyPopup) {
-    closeHistoryPopup();
-  }
-}
+  document.getElementById('exportJSON').addEventListener('click', exportJSON);
+  document.getElementById('exportCSV').addEventListener('click', exportCSV);
 
-function displayHistoryPreview(index) {
-  const item = history[index];
-  let html = '';
+  // Initial setup
+  updateAoE4Buttons();
+  updateAoMButtons();
+});
 
-  if (item.game === 'AoE IV') {
-    html = generateAoE4PreviewHTML(item);
-  } else if (item.game === 'AoM') {
-    html = generateAoMPreviewHTML(item);
-  }
-
-  elements.historyPreview.innerHTML = html;
-  elements.historyPreview.style.display = 'block';
-}
-
-function generateAoE4PreviewHTML(item) {
-  let html = `
-    <div class="preview-content">
-      <h3 class="preview-title">Age of Empires IV</h3>
-      <h4 class="preview-subtitle">Civilization: ${item.civilization}</h4>
-      <h5 class="preview-section-title">Age Ups:</h5>
-      <ul class="preview-list">
-  `;
-  for (const [age, choice] of Object.entries(item.ageUps)) {
-    html += `<li><strong>Age ${age}:</strong> ${choice}</li>`;
-  }
-  html += `
-      </ul>
-    </div>
-  `;
-  return html;
-}
-
-function generateAoMPreviewHTML(item) {
-  let html = `
-    <div class="preview-content">
-      <h3 class="preview-title">Age of Mythology</h3>
-      <h4 class="preview-subtitle">Civilization: ${item.civilization}</h4>
-      <h5 class="preview-section-title">Major God: ${item.majorGod}</h5>
-      <h5 class="preview-section-title">Minor Gods:</h5>
-      <ul class="preview-list">
-  `;
-  for (const [age, god] of Object.entries(item.minorGods)) {
-    html += `<li><strong>${age} Age:</strong> ${god}</li>`;
-  }
-  html += `
-      </ul>
-    </div>
-  `;
-  return html;
-}
-
-// Game Logic Functions
 function handleGenerateAoE4() {
-  console.log('Generating AoE IV civilization');
+  console.log('handleGenerateAoE4 called');
   const result = generateRandomAoE4Civ();
-  displayAoE4Result(result, false);
-  elements.generateAoE4Btn.style.display = 'none';
-  elements.finalizeAoE4Btn.style.display = 'inline-block';
-  elements.historyPreview.style.display = 'none';
+  console.log('AoE4 result:', result);
+  displayAoE4Result(result, false); // Display result without finalizing
+  document.getElementById('generateAoE4Btn').style.display = 'none';
+  document.getElementById('finalizeAoE4Btn').style.display = 'inline-block';
+  document.getElementById('historyPreview').style.display = 'none';
+  console.log('handleGenerateAoE4 completed');
 }
 
 function handleGenerateAoM() {
-  console.log('Generating AoM civilization');
+  console.log('handleGenerateAoM called');
   const result = generateRandomAoMCiv();
-  displayAoMResult(result, false);
-  elements.generateAoMBtn.style.display = 'none';
-  elements.finalizeAoMBtn.style.display = 'inline-block';
-  elements.historyPreview.style.display = 'none';
+  console.log('AoM result:', result);
+  displayAoMResult(result, false); // Display result without finalizing
+  document.getElementById('generateAoMBtn').style.display = 'none';
+  document.getElementById('finalizeAoMBtn').style.display = 'inline-block';
+  document.getElementById('historyPreview').style.display = 'none';
+  console.log('handleGenerateAoM completed');
 }
 
 function handleFinalizeAoE4() {
-  console.log('Finalizing AoE IV selection');
-  const result = finalizeAoE4Selection(false);
+  console.log('handleFinalizeAoE4 called');
+  const result = finalizeAoE4Selection(false); // Set addToHistory to false
   if (result) {
     displayAoE4Result(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoE4State();
   } else {
-    console.error('Failed to finalize AoE IV selection');
+    console.error('Failed to finalize AoE4 selection');
   }
+  console.log('handleFinalizeAoE4 completed');
 }
 
 function handleFinalizeAoM() {
-  console.log('Finalizing AoM selection');
-  const result = finalizeAoMSelection(false);
+  console.log('handleFinalizeAoM called');
+  const result = finalizeAoMSelection(false); // Set addToHistory to false
   if (result) {
     displayAoMResult(result, true);
-    addToHistory(result);
+    addToHistory(result); // Add to history here
     resetAoMState();
   } else {
     console.error('Failed to finalize AoM selection');
   }
+  console.log('handleFinalizeAoM completed');
 }
 
-// Initialization
-function init() {
-  loadHistory();
-  setupEventListeners();
-  updateAoE4Buttons();
-  updateAoMButtons();
+function displayHistoryItem(index) {
+  const item = history[index];
+  const popupContent = document.getElementById('popupContent');
+  let html = '';
+
+  if (item.game === 'AoE IV') {
+    html = `
+      <div class="selection-result">
+        <h3>AoE IV:</h3>
+        <h4>${item.civilization}</h4>
+      </div>
+    `;
+    html += '<ul>';
+    for (const [age, choice] of Object.entries(item.ageUps)) {
+      html += `<li>Age ${age}: ${choice}</li>`;
+    }
+    html += '</ul>';
+  } else if (item.game === 'AoM') {
+    html = `
+      <div class="selection-result">
+        <h3>AoM:</h3>
+        <h4>${item.civilization}</h4>
+        <h3>Major God:</h3>
+        <h4>${item.majorGod}</h4>
+      </div>
+    `;
+    html += '<ul>';
+    for (const [age, god] of Object.entries(item.minorGods)) {
+      html += `<li>${age} Age: ${god}</li>`;
+    }
+    html += '</ul>';
+  }
+
+  popupContent.innerHTML = html;
+  document.getElementById('historyPopup').style.display = 'block';
 }
 
-// Start the application
-document.addEventListener('DOMContentLoaded', init);
-
-// Make necessary functions globally available
+// Ensure these functions are globally available
 globalThis.addToHistory = addToHistory;
-globalThis.displayHistoryItem = displayHistoryPreview;
+globalThis.displayHistoryItem = displayHistoryItem;
