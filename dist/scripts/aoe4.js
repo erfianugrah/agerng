@@ -253,28 +253,34 @@ function displayAoE4Result(result, isFinalized = false) {
 
   let html = `
     <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${civName}</a></h4>
-    </div>`;
+      <h3 class="result-title">Selected Civilization</h3>
+      <h4 class="result-subtitle"><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${civName}</a></h4>
+    </div>
+  `;
 
-  if (result.ageUps) {
-    html += '<ul>';
+  if (civName === 'Abbasid Dynasty' || civName === 'Ayyubids') {
+    html += `<h5 class="result-section-title">Wing Choices:</h5>
+    <ul class="result-list">`;
     for (const [age, choice] of Object.entries(result.ageUps)) {
-      let linkUrl;
-      if (civName === 'Abbasid Dynasty' || civName === 'Ayyubids') {
-        const wingSlug = choice.toLowerCase().replace(/\s+/g, '-');
-        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
-      } else {
-        const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
-        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
-      }
-      html += `<li>Age ${age}: <a href="${linkUrl}" target="_blank">${choice}</a></li>`;
+      const wingSlug = choice.split(' - ')[0].toLowerCase().replace(/\s+/g, '-');
+      const linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
+      html += `<li><strong>Age ${age}:</strong> <a href="${linkUrl}" target="_blank">${choice}</a></li>`;
     }
-    html += '</ul>';
+  } else {
+    html += `<h5 class="result-section-title">Landmarks:</h5>
+    <ul class="result-list">`;
+    for (const [age, choice] of Object.entries(result.ageUps)) {
+      const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+      const linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
+      html += `<li><strong>Age ${age}:</strong> <a href="${linkUrl}" target="_blank">${choice}</a></li>`;
+    }
   }
 
+  html += `</ul>`;
+
   if (isFinalized) {
-    html += '<p><strong>This result has been finalised and added to history.</strong></p>';
+    html +=
+      '<p class="finalized-message"><strong>This result has been finalised and added to history.</strong></p>';
   }
   resultDiv.innerHTML = html;
 }

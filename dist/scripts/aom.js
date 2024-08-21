@@ -180,20 +180,24 @@ function displayAoMResult(result, isFinalized = false) {
   }
   let html = `
     <div class="selection-result">
-      <h3>Selected Civilization:</h3>
-      <h4>${result.civilization || result.name}</h4>
-      <h3>Major God:</h3>
-      <h4>${result.majorGod || result.god}</h4>
-    </div>`;
+      <h3 class="result-title">Selected Civilization</h3>
+      <h4 class="result-subtitle">${result.civilization || result.name}</h4>
+      <h5 class="result-section-title">Major God: ${result.majorGod || result.god}</h5>
+    </div>
+    <h5 class="result-section-title">Minor Gods:</h5>
+    <ul class="result-list">
+  `;
   if (result.minorGods) {
-    html += '<ul>';
     for (const [age, god] of Object.entries(result.minorGods)) {
-      html += `<li>${age} Age: ${god}</li>`;
+      html += `<li><strong>${age} Age:</strong> ${god}</li>`;
     }
-    html += '</ul>';
   }
+  html += `
+    </ul>
+  `;
   if (isFinalized) {
-    html += '<p><strong>This result has been finalised and added to history.</strong></p>';
+    html +=
+      '<p class="finalized-message"><strong>This result has been finalised and added to history.</strong></p>';
   }
   resultDiv.innerHTML = html;
 }
