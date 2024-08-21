@@ -94,18 +94,28 @@ function displayHistoryItem(index) {
   let html = '';
 
   if (item.game === 'AoE IV') {
+    const civSlug = AOE4_CIVILIZATIONS[item.civilization];
     html = `
       <div class="selection-result">
         <h3>AoE IV:</h3>
-        <h4>${item.civilization}</h4>
+        <h4><a href="https://aoe4world.com/explorer/civs/${civSlug}" target="_blank">${item.civilization}</a></h4>
       </div>
     `;
     html += '<ul>';
     for (const [age, choice] of Object.entries(item.ageUps)) {
-      html += `<li>Age ${age}: ${choice}</li>`;
+      let linkUrl;
+      if (item.civilization === 'Abbasid Dynasty' || item.civilization === 'Ayyubids') {
+        const wingSlug = choice.split(' - ')[0].toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/technologies/${age.toLowerCase()}-${wingSlug}-advancement`;
+      } else {
+        const buildingSlug = choice.toLowerCase().replace(/\s+/g, '-');
+        linkUrl = `https://aoe4world.com/explorer/civs/${civSlug}/buildings/${buildingSlug}`;
+      }
+      html += `<li>Age ${age}: <a href="${linkUrl}" target="_blank">${choice}</a></li>`;
     }
     html += '</ul>';
   } else if (item.game === 'AoM') {
+    // Keep the existing AoM display logic
     html = `
       <div class="selection-result">
         <h3>AoM:</h3>
@@ -123,8 +133,6 @@ function displayHistoryItem(index) {
 
   popupContent.innerHTML = html;
   document.getElementById('historyPopup').style.display = 'block';
-}
-
-// Ensure these functions are globally available
+} // Ensure these functions are globally available
 globalThis.addToHistory = addToHistory;
 globalThis.displayHistoryItem = displayHistoryItem;
