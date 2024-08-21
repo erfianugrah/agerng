@@ -1,5 +1,7 @@
+// Global variable to store the current AoE4 civilization
 let currentAoE4Civ = null;
 
+// Initialization functions
 function initializeAoE4Weights(civ) {
   console.log(`Initializing weights for ${civ}`);
   if (civ === 'Abbasid Dynasty' || civ === 'Ayyubids') {
@@ -26,6 +28,7 @@ function generateRandomAoE4Civ() {
   return currentAoE4Civ;
 }
 
+// Weight update functions
 function updateAoE4Weight(key, index, value) {
   console.log(`Updating AoE4 weight: key=${key}, index=${index}, value=${value}`);
   value = parseFloat(value);
@@ -56,6 +59,7 @@ function updateStandardWeights(key, index, value) {
   currentAoE4Civ.weights[key][1 - index] = 1 - value;
 }
 
+// UI update functions
 function updateAoE4WeightDisplay() {
   const weightsDiv = document.getElementById('aoe4Weights');
   const sliders = weightsDiv.querySelectorAll('.aoe4-slider');
@@ -103,14 +107,6 @@ function updateAoE4WeightInputs() {
   });
 }
 
-function handleAoE4SliderInput(event) {
-  const slider = event.target;
-  const key = slider.dataset.key;
-  const index = parseInt(slider.dataset.index);
-  const value = parseFloat(slider.value);
-  updateAoE4Weight(key, index, value);
-}
-
 function updateAoE4Buttons() {
   const additionalButtonsDiv = document.getElementById('aoe4AdditionalButtons');
   const generateBtn = document.getElementById('generateAoE4Btn');
@@ -151,6 +147,15 @@ function updateAoE4Buttons() {
   additionalButtonsDiv.style.display = currentAoE4Civ ? 'block' : 'none';
 }
 
+// Event handler functions
+function handleAoE4SliderInput(event) {
+  const slider = event.target;
+  const key = slider.dataset.key;
+  const index = parseInt(slider.dataset.index);
+  const value = parseFloat(slider.value);
+  updateAoE4Weight(key, index, value);
+}
+
 function rerollAoE4Landmarks() {
   console.log('Re-rolling landmarks for current AoE4 civilization');
   if (!currentAoE4Civ) {
@@ -162,6 +167,17 @@ function rerollAoE4Landmarks() {
   displayAoE4Result(result);
 }
 
+function finalizeAoE4ButtonHandler() {
+  const result = finalizeAoE4Selection(true);
+  if (result) {
+    displayAoE4Result(result, true);
+    resetAoE4State();
+  } else {
+    console.error('Failed to finalize AoE4 selection');
+  }
+}
+
+// Selection finalization functions
 function finalizeAoE4Selection(addToHistory = true) {
   console.log('Finalizing AoE4 selection');
   if (!currentAoE4Civ) {
@@ -179,7 +195,6 @@ function finalizeAoE4Selection(addToHistory = true) {
   const result = { game: 'AoE IV', civilization: currentAoE4Civ.name, ageUps };
   console.log('AoE4 finalized result:', result);
 
-  // Remove the addToHistory call from here
   return result;
 }
 
@@ -224,22 +239,7 @@ function finalizeStandardSelection() {
   return ageUps;
 }
 
-function finalizeAoE4ButtonHandler() {
-  const result = finalizeAoE4Selection(true);
-  if (result) {
-    displayAoE4Result(result, true);
-    resetAoE4State();
-  } else {
-    console.error('Failed to finalize AoE4 selection');
-  }
-}
-
-function resetAoE4State() {
-  currentAoE4Civ = null;
-  updateAoE4Buttons();
-  updateAoE4WeightInputs(); // This will now clear the weights div
-}
-
+// Result display and state reset functions
 function displayAoE4Result(result, isFinalized = false) {
   console.log('Displaying AoE4 result', result);
   const resultDiv = document.getElementById('aoe4Result');
@@ -279,6 +279,13 @@ function displayAoE4Result(result, isFinalized = false) {
   resultDiv.innerHTML = html;
 }
 
+function resetAoE4State() {
+  currentAoE4Civ = null;
+  updateAoE4Buttons();
+  updateAoE4WeightInputs(); // This will now clear the weights div
+}
+
+// HTML generation helper functions
 function generateAbbasidAyyubidHTML() {
   let html = '<div class="weight-group"><h4>Wings (Adjust to set initial probabilities)</h4>';
   const wings = aoe4AgeUpOptions[currentAoE4Civ.name];
@@ -324,5 +331,4 @@ globalThis.displayAoE4Result = displayAoE4Result;
 globalThis.resetAoE4State = resetAoE4State;
 globalThis.updateAoE4Buttons = updateAoE4Buttons;
 
-// Assume weightedRandomChoice function is defined elsewhere
-// function weightedRandomChoice(options, weights) { ... }
+// Note: weightedRandomChoice function is assumed to be defined elsewhere

@@ -1,5 +1,7 @@
+// Global variable to store the current AoM civilization
 let currentAoMCiv = null;
 
+// Initialization functions
 function initializeAoMWeights(civ, god) {
   return {
     Classical: [0.5, 0.5],
@@ -19,12 +21,11 @@ function generateRandomAoMCiv() {
   return currentAoMCiv;
 }
 
+// Weight update functions
 function updateAoMWeight(key, index, value) {
   value = parseFloat(value);
   currentAoMCiv.weights[key][index] = value;
   currentAoMCiv.weights[key][1 - index] = 1 - value;
-
-  // Update the displayed values
   updateAoMWeightDisplay();
 }
 
@@ -40,6 +41,7 @@ function updateAoMWeightDisplay() {
   });
 }
 
+// UI update functions
 function updateAoMWeightInputs() {
   const weightsDiv = document.getElementById('aomWeights');
   if (!weightsDiv) {
@@ -55,18 +57,7 @@ function updateAoMWeightInputs() {
   let html = `<h3>Weights for ${currentAoMCiv.name} - ${currentAoMCiv.god}:</h3>`;
   for (const age of ['Classical', 'Heroic', 'Mythic']) {
     const options = aomGods[currentAoMCiv.name].minor[currentAoMCiv.god][age];
-    html += `<div class="weight-group"><h4>${age} Age</h4>`;
-    options.forEach((option, index) => {
-      html += `
-        <div class="weight-item">
-          <span class="weight-label">${option}</span>
-          <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
-            data-key="${age}" data-index="${index}">
-          <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
-        </div>
-      `;
-    });
-    html += '</div>';
+    html += generateWeightGroupHTML(age, options);
   }
   weightsDiv.innerHTML = html;
 
@@ -75,14 +66,6 @@ function updateAoMWeightInputs() {
   sliders.forEach((slider) => {
     slider.addEventListener('input', handleAoMSliderInput);
   });
-}
-
-function handleAoMSliderInput(event) {
-  const slider = event.target;
-  const key = slider.dataset.key;
-  const index = parseInt(slider.dataset.index);
-  const value = parseFloat(slider.value);
-  updateAoMWeight(key, index, value);
 }
 
 function updateAoMButtons() {
@@ -97,20 +80,15 @@ function updateAoMButtons() {
 
   // Update additional buttons
   additionalButtonsDiv.innerHTML = currentAoMCiv
-    ? `
-    <button id="rerollAoMGodsBtn">Roll Gods</button>
-  `
+    ? '<button id="rerollAoMGodsBtn">Roll Gods</button>'
     : '';
 
   // Set up event listeners
   if (currentAoMCiv) {
     document.getElementById('rerollAoMGodsBtn').addEventListener('click', rerollAoMGods);
-  }
-
-  // Remove existing event listeners before adding new ones
-  finalizeBtn.removeEventListener('click', finalizeAoMButtonHandler);
-  if (currentAoMCiv) {
     finalizeBtn.addEventListener('click', finalizeAoMButtonHandler);
+  } else {
+    finalizeBtn.removeEventListener('click', finalizeAoMButtonHandler);
   }
 
   // Show/hide buttons as needed
@@ -119,16 +97,35 @@ function updateAoMButtons() {
   additionalButtonsDiv.style.display = currentAoMCiv ? 'block' : 'none';
 }
 
+// Event handler functions
+function handleAoMSliderInput(event) {
+  const slider = event.target;
+  const key = slider.dataset.key;
+  const index = parseInt(slider.dataset.index);
+  const value = parseFloat(slider.value);
+  updateAoMWeight(key, index, value);
+}
+
 function rerollAoMGods() {
   if (!currentAoMCiv) {
     console.error('No current AoM civilization selected');
     return;
   }
-
   const result = finalizeAoMSelection(false);
   displayAoMResult(result);
 }
 
+function finalizeAoMButtonHandler() {
+  const result = finalizeAoMSelection(true);
+  if (result) {
+    displayAoMResult(result, true);
+    resetAoMState();
+  } else {
+    console.error('Failed to finalize AoM selection');
+  }
+}
+
+// Selection finalization functions
 function finalizeAoMSelection(addToHistory = true) {
   console.log('Finalizing AoM selection');
   if (!currentAoMCiv) {
@@ -150,27 +147,10 @@ function finalizeAoMSelection(addToHistory = true) {
   };
 
   console.log('AoM finalized result:', result);
-
-  // Remove the addToHistory call from here
   return result;
 }
 
-function finalizeAoMButtonHandler() {
-  const result = finalizeAoMSelection(true);
-  if (result) {
-    displayAoMResult(result, true);
-    resetAoMState();
-  } else {
-    console.error('Failed to finalize AoM selection');
-  }
-}
-
-function resetAoMState() {
-  currentAoMCiv = null;
-  updateAoMButtons();
-  updateAoMWeightInputs(); // This will now clear the weights div
-}
-
+// Result display and state reset functions
 function displayAoMResult(result, isFinalized = false) {
   console.log('Displaying AoM result', result);
   const resultDiv = document.getElementById('aomResult');
@@ -198,6 +178,29 @@ function displayAoMResult(result, isFinalized = false) {
   resultDiv.innerHTML = html;
 }
 
+function resetAoMState() {
+  currentAoMCiv = null;
+  updateAoMButtons();
+  updateAoMWeightInputs(); // This will now clear the weights div
+}
+
+// Helper functions
+function generateWeightGroupHTML(age, options) {
+  let html = `<div class="weight-group"><h4>${age} Age</h4>`;
+  options.forEach((option, index) => {
+    html += `
+      <div class="weight-item">
+        <span class="weight-label">${option}</span>
+        <input type="range" class="weight-slider" min="0" max="1" step="0.01" value="${currentAoMCiv.weights[age][index]}"
+          data-key="${age}" data-index="${index}">
+        <span class="weight-value">${(currentAoMCiv.weights[age][index] * 100).toFixed(0)}%</span>
+      </div>
+    `;
+  });
+  html += '</div>';
+  return html;
+}
+
 // Make functions globally available
 globalThis.generateRandomAoMCiv = generateRandomAoMCiv;
 globalThis.finalizeAoMSelection = finalizeAoMSelection;
@@ -205,5 +208,4 @@ globalThis.displayAoMResult = displayAoMResult;
 globalThis.resetAoMState = resetAoMState;
 globalThis.updateAoMButtons = updateAoMButtons;
 
-// Assume weightedRandomChoice function is defined elsewhere
-// function weightedRandomChoice(options, weights) { ... }
+// Note: weightedRandomChoice function is assumed to be defined elsewhere

@@ -1,5 +1,7 @@
+// Global variables
 let history = [];
 
+// History management functions
 function loadHistory() {
   const savedHistory = localStorage.getItem('aoeRngHistory');
   if (savedHistory) {
@@ -40,33 +42,37 @@ function displayHistoryItem(index) {
   let html = '';
 
   if (item.game === 'AoE IV') {
-    html = `<h3>AoE IV: ${item.civilization}</h3>`;
-    html += '<ul>';
-    for (const [age, choice] of Object.entries(item.ageUps)) {
-      html += `<li>Age ${age}: ${choice}</li>`;
-    }
-    html += '</ul>';
+    html = generateAoE4PreviewHTML(item);
   } else if (item.game === 'AoM') {
-    html = `<h3>AoM: ${item.civilization} - ${item.majorGod}</h3>`;
-    html += '<ul>';
-    for (const [age, god] of Object.entries(item.minorGods)) {
-      html += `<li>${age} Age: ${god}</li>`;
-    }
-    html += '</ul>';
+    html = generateAoMPreviewHTML(item);
   }
 
   previewDiv.innerHTML = html;
   previewDiv.style.display = 'block';
 }
 
+function generateAoE4PreviewHTML(item) {
+  let html = `<h3>AoE IV: ${item.civilization}</h3><ul>`;
+  for (const [age, choice] of Object.entries(item.ageUps)) {
+    html += `<li>Age ${age}: ${choice}</li>`;
+  }
+  html += '</ul>';
+  return html;
+}
+
+function generateAoMPreviewHTML(item) {
+  let html = `<h3>AoM: ${item.civilization} - ${item.majorGod}</h3><ul>`;
+  for (const [age, god] of Object.entries(item.minorGods)) {
+    html += `<li>${age} Age: ${god}</li>`;
+  }
+  html += '</ul>';
+  return html;
+}
+
+// Export functions
 function exportJSON() {
   const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(history));
-  const downloadAnchorNode = document.createElement('a');
-  downloadAnchorNode.setAttribute('href', dataStr);
-  downloadAnchorNode.setAttribute('download', 'aoe_rng_history.json');
-  document.body.appendChild(downloadAnchorNode);
-  downloadAnchorNode.click();
-  downloadAnchorNode.remove();
+  downloadFile(dataStr, 'aoe_rng_history.json');
 }
 
 function exportCSV() {
@@ -74,26 +80,34 @@ function exportCSV() {
   csvContent += 'Game,Civilization,Major God,Minor Gods\n';
   history.forEach((item) => {
     let row = `${item.game},${item.civilization},${item.majorGod || ''},`;
-    if (item.minorGods) {
-      row += `"${Object.entries(item.minorGods)
-        .map(([age, god]) => `${age}: ${god}`)
-        .join(', ')}"`;
-    } else if (item.ageUps) {
-      row += `"${Object.entries(item.ageUps)
-        .map(([age, choice]) => `Age ${age}: ${choice}`)
-        .join(', ')}"`;
-    }
+    row += item.minorGods ? formatMinorGods(item.minorGods) : formatAgeUps(item.ageUps);
     csvContent += row + '\n';
   });
-  const encodedUri = encodeURI(csvContent);
+  downloadFile(encodeURI(csvContent), 'aoe_rng_history.csv');
+}
+
+function formatMinorGods(minorGods) {
+  return `"${Object.entries(minorGods)
+    .map(([age, god]) => `${age}: ${god}`)
+    .join(', ')}"`;
+}
+
+function formatAgeUps(ageUps) {
+  return `"${Object.entries(ageUps)
+    .map(([age, choice]) => `Age ${age}: ${choice}`)
+    .join(', ')}"`;
+}
+
+function downloadFile(content, filename) {
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute('download', 'aoe_rng_history.csv');
+  link.setAttribute('href', content);
+  link.setAttribute('download', filename);
   document.body.appendChild(link);
   link.click();
   link.remove();
 }
 
+// Utility functions
 function weightedRandomChoice(options, weights) {
   const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
   let random = Math.random() * totalWeight;
