@@ -18,7 +18,8 @@ function initializeAoE4Weights(civ) {
 
 function generateRandomAoE4Civ() {
   console.log('Generating random AoE4 civilization');
-  const civ = aoe4Civilizations[Math.floor(Math.random() * aoe4Civilizations.length)];
+  const shuffledCivs = fisherYatesShuffle([...aoe4Civilizations]);
+  const civ = shuffledCivs[0];
   currentAoE4Civ = {
     name: civ,
     weights: initializeAoE4Weights(civ),

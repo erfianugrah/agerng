@@ -12,8 +12,10 @@ function initializeAoMWeights(civ, god) {
 
 function generateRandomAoMCiv() {
   console.log('Generating random AoM civilization');
-  const civ = aomCivilizations[Math.floor(Math.random() * aomCivilizations.length)];
-  const majorGod = aomGods[civ].major[Math.floor(Math.random() * aomGods[civ].major.length)];
+  const shuffledCivs = fisherYatesShuffle([...aomCivilizations]);
+  const civ = shuffledCivs[0];
+  const shuffledMajorGods = fisherYatesShuffle([...aomGods[civ].major]);
+  const majorGod = shuffledMajorGods[0];
   currentAoMCiv = { name: civ, god: majorGod, weights: initializeAoMWeights(civ, majorGod) };
   console.log('Generated AoM civilization:', currentAoMCiv);
   updateAoMWeightInputs();
